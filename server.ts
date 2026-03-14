@@ -18,6 +18,12 @@ async function startServer() {
   });
 
   app.use(express.json({ limit: '50mb' }));
+  
+  // Ensure data directory exists
+  const dataDir = path.join(process.cwd(), 'data');
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+  }
 
   // Serve newly created HTML files from the root
   app.use((req, res, next) => {
@@ -38,16 +44,16 @@ async function startServer() {
   // CORS Middleware (Allow requests from GitHub Pages for testing)
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     if (req.method === "OPTIONS") return res.sendStatus(200);
     next();
   });
 
-  // API Route to save generated pages
+  // API Route to save generated pages and metadata
   app.post("/api/save-page", (req, res) => {
     console.log("Received save-page request:", req.body.filename);
-    const { filename, content } = req.body;
+    const { filename, content, itemData } = req.body;
 
     if (!filename || !content) {
       return res.status(400).json({ error: "Filename and content are required." });
@@ -60,11 +66,36 @@ async function startServer() {
 
     try {
       fs.writeFileSync(filePath, content);
+      
+      // Save metadata if provided (for comparisons/lists)
+      if (itemData) {
+        const metadataPath = path.join(dataDir, `${safeFilename}.json`);
+        fs.writeFileSync(metadataPath, JSON.stringify(itemData, null, 2));
+      }
+
       console.log(`File saved: ${finalFilename}`);
       res.json({ success: true, url: `/${finalFilename}` });
     } catch (error) {
       console.error("Error saving file:", error);
       res.status(500).json({ error: "Failed to save file." });
+    }
+  });
+
+  // API Route to list all items with metadata
+  app.get("/api/list-items", (req, res) => {
+    try {
+      const files = fs.readdirSync(dataDir);
+      const items = files.filter(file => file.endsWith('.json')).map(file => {
+        const content = JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf-8'));
+        return {
+          id: file.replace('.json', ''),
+          name: content.model ? `${content.brand} ${content.model}` : content.name,
+          data: content
+        };
+      });
+      res.json(items);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to list items" });
     }
   });
 
