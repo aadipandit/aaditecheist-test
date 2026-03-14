@@ -35,6 +35,15 @@ async function startServer() {
     res.json({ status: "ok", time: new Date().toISOString() });
   });
 
+  // CORS Middleware (Allow requests from GitHub Pages for testing)
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    if (req.method === "OPTIONS") return res.sendStatus(200);
+    next();
+  });
+
   // API Route to save generated pages
   app.post("/api/save-page", (req, res) => {
     console.log("Received save-page request:", req.body.filename);
@@ -56,6 +65,139 @@ async function startServer() {
     } catch (error) {
       console.error("Error saving file:", error);
       res.status(500).json({ error: "Failed to save file." });
+    }
+  });
+
+  // API Route to push to GitHub
+  app.post("/api/push-to-github", async (req, res) => {
+    const { filename, content, commitMessage } = req.body;
+    const token = process.env.GITHUB_TOKEN;
+    const owner = process.env.GITHUB_USERNAME;
+    const repo = process.env.GITHUB_REPO;
+    const branch = process.env.GITHUB_BRANCH || 'main';
+
+    if (!token || !owner || !repo) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "GitHub configuration missing. Please add GITHUB_TOKEN, GITHUB_USERNAME, and GITHUB_REPO to AI Studio Settings." 
+      });
+    }
+
+    const safeFilename = path.basename(filename).replace(/[^a-z0-9.-]/gi, '_');
+    const finalFilename = safeFilename.endsWith('.html') ? safeFilename : `${safeFilename}.html`;
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${finalFilename}`;
+
+    try {
+      // Check if file exists to get its SHA (required for updates)
+      let sha;
+      console.log(`Checking if file exists: ${url}`);
+      const getResponse = await fetch(url, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'AI-Studio-App'
+        }
+      });
+      
+      if (getResponse.ok) {
+        const fileData = await getResponse.json();
+        sha = fileData.sha;
+        console.log(`File exists, SHA: ${sha}`);
+      } else if (getResponse.status !== 404) {
+        const errData = await getResponse.json();
+        console.error("GitHub GET Error:", errData);
+        return res.status(getResponse.status).json({ success: false, error: errData.message || "GitHub API error" });
+      }
+
+      // Push to GitHub
+      console.log(`Pushing to GitHub: ${url}`);
+      const pushResponse = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'AI-Studio-App'
+        },
+        body: JSON.stringify({
+          message: commitMessage || `Add ${finalFilename} review page`,
+          content: Buffer.from(content).toString('base64'),
+          sha: sha,
+          branch: branch
+        })
+      });
+
+      if (!pushResponse.ok) {
+        const errorData = await pushResponse.json();
+        console.error("GitHub PUT Error:", errorData);
+        throw new Error(errorData.message || "GitHub API error");
+      }
+
+      const result = await pushResponse.json();
+      res.json({ 
+        success: true, 
+        url: `https://${owner}.github.io/${repo}/${finalFilename}`,
+        githubUrl: result.content.html_url
+      });
+    } catch (error) {
+      console.error("GitHub Push Error:", error);
+      res.status(500).json({ success: false, error: error instanceof Error ? error.message : "Failed to push to GitHub" });
+    }
+  });
+
+  // API Route to list all generated pages
+  app.get("/api/list-pages", (req, res) => {
+    try {
+      const files = fs.readdirSync(process.cwd());
+      const htmlFiles = files.filter(file => 
+        file.endsWith('.html') && 
+        file !== 'index.html' && 
+        file !== 'leader.html' &&
+        file !== '404.html'
+      ).map(file => {
+        const stats = fs.statSync(path.join(process.cwd(), file));
+        return {
+          name: file,
+          url: `/${file}`,
+          mtime: stats.mtime
+        };
+      });
+      res.json(htmlFiles);
+    } catch (error) {
+      console.error("Error listing pages:", error);
+      res.status(500).json({ error: "Failed to list pages" });
+    }
+  });
+
+  // API Route to get page content for editing
+  app.get("/api/get-page", (req, res) => {
+    const { filename } = req.query;
+    if (!filename) return res.status(400).json({ error: "Filename required" });
+    
+    const filePath = path.join(process.cwd(), String(filename));
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
+
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      res.json({ content });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to read file" });
+    }
+  });
+
+  // API Route to delete a page
+  app.delete("/api/delete-page", (req, res) => {
+    const { filename } = req.body;
+    if (!filename) return res.status(400).json({ error: "Filename required" });
+
+    const filePath = path.join(process.cwd(), filename);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
+
+    try {
+      fs.unlinkSync(filePath);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete file" });
     }
   });
 

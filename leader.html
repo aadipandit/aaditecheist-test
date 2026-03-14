@@ -162,6 +162,8 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab('mobile')">Mobile Generator</button>
             <button class="tab-btn" onclick="showTab('laptop')">Laptop Generator</button>
+            <button class="tab-btn" onclick="showTab('comparison')">Comparison Generator</button>
+            <button class="tab-btn" onclick="showTab('manage')">Manage Pages</button>
         </div>
 
         <!-- Mobile Form -->
@@ -413,11 +415,32 @@
         </div>
 
 
+        <!-- Comparison Form -->
+        <div id="comparisonForm" class="form-section">
+            <div class="form-grid">
+                <div class="category-title">Comparison Details</div>
+                <div class="form-group"><label>Page Title</label><input type="text" id="compTitle" placeholder="iPhone 15 vs S24 Ultra"></div>
+                <div class="form-group"><label>Item 1 Name</label><input type="text" id="item1Name"></div>
+                <div class="form-group"><label>Item 1 Specs (JSON format)</label><textarea id="item1Specs" placeholder='{"Price": "$999", "Display": "6.1 OLED"}'></textarea></div>
+                <div class="form-group"><label>Item 2 Name</label><input type="text" id="item2Name"></div>
+                <div class="form-group"><label>Item 2 Specs (JSON format)</label><textarea id="item2Specs" placeholder='{"Price": "$899", "Display": "6.2 AMOLED"}'></textarea></div>
+                <button type="button" class="generate-btn" onclick="generateComparison()">Generate Comparison HTML</button>
+            </div>
+        </div>
+
+        <!-- Manage Pages Section -->
+        <div id="manageSection" class="form-section">
+            <div id="pagesList" style="display: grid; gap: 1rem;">
+                <!-- Pages will be listed here -->
+            </div>
+        </div>
+
         <textarea id="outputArea" readonly placeholder="Your generated HTML will appear here..."></textarea>
         
         <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
             <input type="text" id="deployFilename" placeholder="filename (e.g. iphone-15-review)" style="flex: 1; padding: 1rem; background: #222; border: 1px solid var(--border); color: white; border-radius: 10px;">
-            <button class="generate-btn" style="margin-top: 0; flex: 1;" onclick="deployPage()">SAVE & DEPLOY (V3)</button>
+            <button class="generate-btn" style="margin-top: 0; flex: 1;" onclick="deployPage()">SAVE LOCALLY</button>
+            <button class="generate-btn" style="margin-top: 0; flex: 1; background: linear-gradient(45deg, #24292e, #333);" onclick="pushToGitHub()">PUSH TO GITHUB</button>
         </div>
 
         <div id="deployStatus" style="margin-top: 1rem; font-weight: 600; text-align: center;"></div>
@@ -438,6 +461,16 @@
 
         // Check server health on load
         async function checkHealth() {
+            if (window.location.hostname.includes('github.io')) {
+                const statusDiv = document.getElementById('deployStatus');
+                if (statusDiv) {
+                    statusDiv.innerHTML = `<div style="background: #442200; padding: 1rem; border-radius: 10px; border: 1px solid #ff9900; color: #ff9900; margin-bottom: 1rem; text-align: left;">
+                        <strong>Note:</strong> You are on GitHub Pages. The "Save & Deploy" feature requires a live server. 
+                        <br><a href="https://ais-dev-7yticetclxusvz4xpgaawv-391327744688.asia-southeast1.run.app/leader.html" style="color: white; text-decoration: underline;">Click here to use the Live Server</a>
+                    </div>`;
+                }
+                return;
+            }
             try {
                 const response = await fetch('/api/health');
                 const data = await response.json();
@@ -455,10 +488,130 @@
             if (type === 'mobile') {
                 document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
                 document.getElementById('mobileForm').classList.add('active');
-            } else {
+            } else if (type === 'laptop') {
                 document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
                 document.getElementById('laptopForm').classList.add('active');
+            } else if (type === 'comparison') {
+                document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
+                document.getElementById('comparisonForm').classList.add('active');
+            } else if (type === 'manage') {
+                document.querySelector('.tab-btn:nth-child(4)').classList.add('active');
+                document.getElementById('manageSection').classList.add('active');
+                fetchPages();
             }
+        }
+
+        async function fetchPages() {
+            const list = document.getElementById('pagesList');
+            list.innerHTML = "Loading...";
+            try {
+                const response = await fetch('/api/list-pages');
+                const pages = await response.json();
+                list.innerHTML = pages.map(page => `
+                    <div style="background: #222; padding: 1rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${page.name}</strong><br>
+                            <small style="color: #888;">Modified: ${new Date(page.mtime).toLocaleString()}</small>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="${page.url}" target="_blank" style="background: var(--primary); color: black; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; font-size: 0.8rem;">View</a>
+                            <button onclick="editPage('${page.name}')" style="background: #555; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Edit</button>
+                            <button onclick="deletePage('${page.name}')" style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                list.innerHTML = "Error loading pages.";
+            }
+        }
+
+        async function editPage(filename) {
+            try {
+                const response = await fetch(`/api/get-page?filename=${filename}`);
+                const data = await response.json();
+                document.getElementById('outputArea').value = data.content;
+                document.getElementById('deployFilename').value = filename.replace('.html', '');
+                alert("Page content loaded into editor. You can now edit and save.");
+            } catch (error) {
+                alert("Failed to load page content.");
+            }
+        }
+
+        async function deletePage(filename) {
+            if (!confirm(`Are you sure you want to delete ${filename}?`)) return;
+            try {
+                const response = await fetch('/api/delete-page', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert("Page deleted.");
+                    fetchPages();
+                }
+            } catch (error) {
+                alert("Failed to delete page.");
+            }
+        }
+
+        function generateComparison() {
+            const title = document.getElementById('compTitle').value;
+            const item1Name = document.getElementById('item1Name').value;
+            const item2Name = document.getElementById('item2Name').value;
+            const item1Specs = JSON.parse(document.getElementById('item1Specs').value || '{}');
+            const item2Specs = JSON.parse(document.getElementById('item2Specs').value || '{}');
+
+            const allKeys = [...new Set([...Object.keys(item1Specs), ...Object.keys(item2Specs)])];
+
+            let template = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title} | Aaditechiest</title>
+    <style>
+        :root { --primary: #00f2ff; --bg: #050505; --card: #111; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
+        nav { padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; background: var(--card); border-radius: 15px; overflow: hidden; }
+        th, td { padding: 1.5rem; text-align: left; border-bottom: 1px solid #222; }
+        th { background: #222; color: var(--primary); }
+        .spec-label { font-weight: 700; color: #888; }
+        footer { padding: 4rem 5%; background: #000; text-align: center; border-top: 1px solid #222; color: #555; margin-top: 4rem; }
+    </style>
+</head>
+<body>
+    <nav><a href="index.html" class="logo">Aaditechiest</a></nav>
+    <div class="container">
+        <h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">${title}</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>${item1Name}</th>
+                    <th>${item2Name}</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${allKeys.map(key => `
+                <tr>
+                    <td class="spec-label">${key}</td>
+                    <td>${item1Specs[key] || '-'}</td>
+                    <td>${item2Specs[key] || '-'}</td>
+                </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    </div>
+    <footer>&copy; 2024 Aaditechiest. All rights reserved.</footer>
+</body>
+</html>`;
+
+            document.getElementById('outputArea').value = template;
+            document.getElementById('deployFilename').value = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
         }
 
         function generateHTML(type) {
@@ -476,7 +629,9 @@
     <style>
         :root { --primary: #00f2ff; --bg: #050505; --card: #111; --text: #fff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
-        .hero { height: 60vh; background: url('${obj.heroImage}') center/cover no-referrer; display: flex; align-items: flex-end; padding: 4rem 5%; background-attachment: fixed; }
+        nav { padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .hero { height: 60vh; background: url('${obj.heroImage}') center/cover no-referrer; display: flex; align-items: flex-end; padding: 4rem 5%; background-attachment: fixed; position: relative; }
         .hero-overlay { background: linear-gradient(transparent, var(--bg)); position: absolute; top: 0; left: 0; width: 100%; height: 60vh; z-index: 1; }
         .hero-content { position: relative; z-index: 2; }
         .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
@@ -486,10 +641,12 @@
         .spec-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
         .spec-label { color: #888; }
         .buy-now { position: fixed; bottom: 2rem; right: 2rem; background: var(--primary); color: #000; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 800; box-shadow: 0 10px 20px rgba(0,242,255,0.3); z-index: 100; }
+        footer { padding: 4rem 5%; background: #000; text-align: center; border-top: 1px solid #222; color: #555; margin-top: 4rem; }
         @media (max-width: 768px) { .spec-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
+    <nav><a href="index.html" class="logo">Aaditechiest</a></nav>
     <div class="hero-overlay"></div>
     <div class="hero">
         <div class="hero-content">
@@ -622,6 +779,41 @@
                 statusDiv.textContent = "Deployment failed: " + error.message;
                 statusDiv.style.color = "#ff0000";
                 console.error("Deployment error:", error);
+            }
+        }
+
+        async function pushToGitHub() {
+            const filename = document.getElementById('deployFilename').value;
+            const content = document.getElementById('outputArea').value;
+            const statusDiv = document.getElementById('deployStatus');
+
+            if (!filename || !content) {
+                alert("Please generate content and provide a filename first.");
+                return;
+            }
+
+            statusDiv.textContent = "Pushing to GitHub...";
+            statusDiv.style.color = "#00f2ff";
+
+            try {
+                const response = await fetch('/api/push-to-github', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename, content })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    statusDiv.innerHTML = `Successfully Pushed! <a href="${result.url}" target="_blank" style="color: #00ff00;">View on GitHub Pages</a>`;
+                    statusDiv.style.color = "#00ff00";
+                } else {
+                    statusDiv.textContent = "Error: " + result.error;
+                    statusDiv.style.color = "#ff0000";
+                }
+            } catch (error) {
+                statusDiv.textContent = "Push failed: " + error.message;
+                statusDiv.style.color = "#ff0000";
+                console.error("Push error:", error);
             }
         }
 
