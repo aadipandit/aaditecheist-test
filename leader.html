@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leader Panel | Aaditechiest</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #0a0a0a;
+            --card: #1a1a1a;
+            --text: #ffffff;
+            --border: #333;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: none; /* Hidden until password check */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 { margin: 0; font-size: 2.5rem; }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: black;
+            border-color: var(--primary);
+        }
+
+        .form-section {
+            display: none;
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .form-section.active { display: block; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            background: #222;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .form-group input:focus { border-color: var(--primary); }
+
+        .category-title {
+            grid-column: 1 / -1;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .generate-btn {
+            grid-column: 1 / -1;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .generate-btn:hover { transform: scale(1.02); }
+
+        #outputArea {
+            width: 100%;
+            height: 400px;
+            margin-top: 2rem;
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .copy-btn {
+            margin-top: 1rem;
+            padding: 1rem 2rem;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Dynamic Page Generator</h1>
+            <p>Generate SEO-optimized tech review pages instantly.</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('mobile')">Mobile Generator</button>
+            <button class="tab-btn" onclick="showTab('laptop')">Laptop Generator</button>
+        </div>
+
+        <!-- Mobile Form -->
+        <div id="mobileForm" class="form-section active">
+            <form id="mForm" class="form-grid">
+                <div class="category-title">General</div>
+                <div class="form-group"><label>Brand</label><input type="text" name="brand"></div>
+                <div class="form-group"><label>Model</label><input type="text" name="model"></div>
+                <div class="form-group"><label>SKU</label><input type="text" name="sku"></div>
+                <div class="form-group"><label>Release Date</label><input type="text" name="releaseDate"></div>
+                <div class="form-group"><label>Price</label><input type="text" name="price"></div>
+                <div class="form-group"><label>Colors</label><input type="text" name="colors"></div>
+                <div class="form-group"><label>Form Factor</label><input type="text" name="formFactor"></div>
+                <div class="form-group"><label>OS</label><input type="text" name="os"></div>
+                <div class="form-group"><label>UI Skin</label><input type="text" name="uiSkin"></div>
+                <div class="form-group"><label>Affiliate Buy Link</label><input type="text" name="buyLink"></div>
+                <div class="form-group"><label>Hero Image URL</label><input type="text" name="heroImage"></div>
+
+                <div class="category-title">Display</div>
+                <div class="form-group"><label>Size</label><input type="text" name="displaySize"></div>
+                <div class="form-group"><label>Resolution</label><input type="text" name="displayRes"></div>
+                <div class="form-group"><label>PPI</label><input type="text" name="displayPpi"></div>
+                <div class="form-group"><label>Panel Type</label><input type="text" name="displayPanel"></div>
+                <div class="form-group"><label>Refresh Rate</label><input type="text" name="displayRefresh"></div>
+                <div class="form-group"><label>Touch Sampling</label><input type="text" name="displayTouch"></div>
+                <div class="form-group"><label>Brightness</label><input type="text" name="displayBrightness"></div>
+                <div class="form-group"><label>Aspect Ratio</label><input type="text" name="displayAspect"></div>
+                <div class="form-group"><label>HDR</label><input type="text" name="displayHdr"></div>
+                <div class="form-group"><label>Glass Protection</label><input type="text" name="displayGlass"></div>
+                <div class="form-group"><label>AOD</label><input type="text" name="displayAod"></div>
+                <div class="form-group"><label>Notch Type</label><input type="text" name="displayNotch"></div>
+                <div class="form-group"><label>Curved/Flat</label><input type="text" name="displayCurve"></div>
+
+                <div class="category-title">Processor</div>
+                <div class="form-group"><label>Chipset</label><input type="text" name="cpuChipset"></div>
+                <div class="form-group"><label>Manufacturer</label><input type="text" name="cpuMaker"></div>
+                <div class="form-group"><label>Process (nm)</label><input type="text" name="cpuProcess"></div>
+                <div class="form-group"><label>Architecture</label><input type="text" name="cpuArch"></div>
+                <div class="form-group"><label>P-Cores</label><input type="text" name="cpuP"></div>
+                <div class="form-group"><label>E-Cores</label><input type="text" name="cpuE"></div>
+                <div class="form-group"><label>Prime Core</label><input type="text" name="cpuPrime"></div>
+                <div class="form-group"><label>Threads</label><input type="text" name="cpuThreads"></div>
+                <div class="form-group"><label>GPU</label><input type="text" name="gpu"></div>
+                <div class="form-group"><label>AI Engine/NPU</label><input type="text" name="npu"></div>
+                <div class="form-group"><label>ISP</label><input type="text" name="isp"></div>
+                <div class="form-group"><label>Benchmarks</label><input type="text" name="benchmarks"></div>
+
+                <div class="category-title">Memory</div>
+                <div class="form-group"><label>RAM Size</label><input type="text" name="ramSize"></div>
+                <div class="form-group"><label>RAM Type</label><input type="text" name="ramType"></div>
+                <div class="form-group"><label>RAM Speed</label><input type="text" name="ramSpeed"></div>
+                <div class="form-group"><label>Bus Width</label><input type="text" name="ramBus"></div>
+                <div class="form-group"><label>Virtual RAM</label><input type="text" name="ramVirtual"></div>
+
+                <div class="category-title">Storage</div>
+                <div class="form-group"><label>Internal Options</label><input type="text" name="storageOptions"></div>
+                <div class="form-group"><label>Storage Type</label><input type="text" name="storageType"></div>
+                <div class="form-group"><label>Storage Speed</label><input type="text" name="storageSpeed"></div>
+                <div class="form-group"><label>MicroSD Slot</label><input type="text" name="sdSlot"></div>
+                <div class="form-group"><label>Max Expansion</label><input type="text" name="sdMax"></div>
+
+                <div class="category-title">Rear Camera</div>
+                <div class="form-group"><label>Total Count</label><input type="text" name="camCount"></div>
+                <div class="form-group"><label>Main (MP, Sensor, Aperture, OIS, AF)</label><input type="text" name="camMain"></div>
+                <div class="form-group"><label>Ultrawide (MP, FOV, Aperture)</label><input type="text" name="camUW"></div>
+                <div class="form-group"><label>Telephoto (MP, Zoom, Aperture)</label><input type="text" name="camTele"></div>
+                <div class="form-group"><label>Macro</label><input type="text" name="camMacro"></div>
+                <div class="form-group"><label>Depth</label><input type="text" name="camDepth"></div>
+                <div class="form-group"><label>Video Max Res/FPS</label><input type="text" name="camVideo"></div>
+                <div class="form-group"><label>Flash</label><input type="text" name="camFlash"></div>
+
+                <div class="category-title">Front Camera</div>
+                <div class="form-group"><label>MP</label><input type="text" name="selfieMp"></div>
+                <div class="form-group"><label>Aperture</label><input type="text" name="selfieAp"></div>
+                <div class="form-group"><label>AF</label><input type="text" name="selfieAf"></div>
+                <div class="form-group"><label>OIS/EIS</label><input type="text" name="selfieStab"></div>
+                <div class="form-group"><label>Video Res/FPS</label><input type="text" name="selfieVideo"></div>
+
+                <div class="category-title">Battery & Charging</div>
+                <div class="form-group"><label>Capacity</label><input type="text" name="batCap"></div>
+                <div class="form-group"><label>Wired Speed</label><input type="text" name="batWired"></div>
+                <div class="form-group"><label>Wireless Speed</label><input type="text" name="batWireless"></div>
+                <div class="form-group"><label>Reverse Charging</label><input type="text" name="batReverse"></div>
+                <div class="form-group"><label>Standard</label><input type="text" name="batStd"></div>
+                <div class="form-group"><label>Type</label><input type="text" name="batType"></div>
+                <div class="form-group"><label>Charger in-box</label><input type="text" name="batBox"></div>
+
+                <div class="category-title">Connectivity</div>
+                <div class="form-group"><label>5G/4G Bands</label><input type="text" name="connBands"></div>
+                <div class="form-group"><label>SIM Type</label><input type="text" name="connSim"></div>
+                <div class="form-group"><label>Wi-Fi Standard</label><input type="text" name="connWifi"></div>
+                <div class="form-group"><label>Bluetooth Version</label><input type="text" name="connBt"></div>
+                <div class="form-group"><label>NFC</label><input type="text" name="connNfc"></div>
+                <div class="form-group"><label>GPS</label><input type="text" name="connGps"></div>
+                <div class="form-group"><label>USB Type/Standard</label><input type="text" name="connUsb"></div>
+                <div class="form-group"><label>IR Blaster</label><input type="text" name="connIr"></div>
+                <div class="form-group"><label>UWB</label><input type="text" name="connUwb"></div>
+
+                <div class="category-title">Audio</div>
+                <div class="form-group"><label>Speaker Setup</label><input type="text" name="audioSpeakers"></div>
+                <div class="form-group"><label>Tuning</label><input type="text" name="audioTuning"></div>
+                <div class="form-group"><label>3.5mm Jack</label><input type="text" name="audioJack"></div>
+                <div class="form-group"><label>Mics</label><input type="text" name="audioMics"></div>
+                <div class="form-group"><label>Noise Cancelling</label><input type="text" name="audioNc"></div>
+
+                <div class="category-title">Security & Build</div>
+                <div class="form-group"><label>Fingerprint Type</label><input type="text" name="secFinger"></div>
+                <div class="form-group"><label>Face Unlock</label><input type="text" name="secFace"></div>
+                <div class="form-group"><label>Dimensions</label><input type="text" name="buildDim"></div>
+                <div class="form-group"><label>Weight</label><input type="text" name="buildWeight"></div>
+                <div class="form-group"><label>Frame Material</label><input type="text" name="buildFrame"></div>
+                <div class="form-group"><label>Back Material</label><input type="text" name="buildBack"></div>
+                <div class="form-group"><label>IP Rating</label><input type="text" name="buildIp"></div>
+
+                <div class="category-title">Sensors</div>
+                <div class="form-group"><label>List Sensors</label><input type="text" name="sensors" placeholder="Accel, Gyro, etc."></div>
+
+                <div class="category-title">Software</div>
+                <div class="form-group"><label>OS Version</label><input type="text" name="softOs"></div>
+                <div class="form-group"><label>Update Guarantee</label><input type="text" name="softUpdate"></div>
+                <div class="form-group"><label>AI Features</label><input type="text" name="softAi"></div>
+
+                <div class="category-title">In-Box</div>
+                <div class="form-group"><label>Contents</label><input type="text" name="boxContents" placeholder="Charger, Cable, etc."></div>
+
+                <button type="button" class="generate-btn" onclick="generateHTML('mobile')">Generate Mobile Review HTML</button>
+            </form>
+        </div>
+
+        <!-- Laptop Form -->
+        <div id="laptopForm" class="form-section">
+            <form id="lForm" class="form-grid">
+                <div class="category-title">General</div>
+                <div class="form-group"><label>Brand</label><input type="text" name="brand"></div>
+                <div class="form-group"><label>Model</label><input type="text" name="model"></div>
+                <div class="form-group"><label>Series</label><input type="text" name="series"></div>
+                <div class="form-group"><label>Release Date</label><input type="text" name="releaseDate"></div>
+                <div class="form-group"><label>Price</label><input type="text" name="price"></div>
+                <div class="form-group"><label>Target Use</label><input type="text" name="targetUse"></div>
+                <div class="form-group"><label>OS</label><input type="text" name="os"></div>
+                <div class="form-group"><label>Warranty</label><input type="text" name="warranty"></div>
+                <div class="form-group"><label>Affiliate Buy Link</label><input type="text" name="buyLink"></div>
+                <div class="form-group"><label>Hero Image URL</label><input type="text" name="heroImage"></div>
+
+                <div class="category-title">Processor</div>
+                <div class="form-group"><label>CPU Brand</label><input type="text" name="cpuBrand"></div>
+                <div class="form-group"><label>CPU Name</label><input type="text" name="cpuName"></div>
+                <div class="form-group"><label>Generation</label><input type="text" name="cpuGen"></div>
+                <div class="form-group"><label>Series</label><input type="text" name="cpuSeries"></div>
+                <div class="form-group"><label>Process</label><input type="text" name="cpuProcess"></div>
+                <div class="form-group"><label>Architecture</label><input type="text" name="cpuArch"></div>
+                <div class="form-group"><label>P-Cores</label><input type="text" name="cpuP"></div>
+                <div class="form-group"><label>E-Cores</label><input type="text" name="cpuE"></div>
+                <div class="form-group"><label>Threads</label><input type="text" name="cpuThreads"></div>
+                <div class="form-group"><label>Clock Speeds</label><input type="text" name="cpuClock"></div>
+                <div class="form-group"><label>Cache</label><input type="text" name="cpuCache"></div>
+                <div class="form-group"><label>TDP</label><input type="text" name="cpuTdp"></div>
+                <div class="form-group"><label>iGPU</label><input type="text" name="cpuIgpu"></div>
+                <div class="form-group"><label>NPU</label><input type="text" name="cpuNpu"></div>
+
+                <div class="category-title">Display</div>
+                <div class="form-group"><label>Size</label><input type="text" name="displaySize"></div>
+                <div class="form-group"><label>Resolution</label><input type="text" name="displayRes"></div>
+                <div class="form-group"><label>PPI</label><input type="text" name="displayPpi"></div>
+                <div class="form-group"><label>Panel Type</label><input type="text" name="displayPanel"></div>
+                <div class="form-group"><label>Refresh Rate</label><input type="text" name="displayRefresh"></div>
+                <div class="form-group"><label>Response Time</label><input type="text" name="displayResponse"></div>
+                <div class="form-group"><label>Touch</label><input type="text" name="displayTouch"></div>
+                <div class="form-group"><label>Aspect Ratio</label><input type="text" name="displayAspect"></div>
+                <div class="form-group"><label>Brightness</label><input type="text" name="displayBrightness"></div>
+                <div class="form-group"><label>Color Gamut/Accuracy</label><input type="text" name="displayGamut"></div>
+                <div class="form-group"><label>HDR</label><input type="text" name="displayHdr"></div>
+                <div class="form-group"><label>Finish</label><input type="text" name="displayFinish"></div>
+
+                <div class="category-title">Graphics</div>
+                <div class="form-group"><label>iGPU Details</label><input type="text" name="gpuIgpu"></div>
+                <div class="form-group"><label>dGPU Brand</label><input type="text" name="gpuBrand"></div>
+                <div class="form-group"><label>dGPU Model</label><input type="text" name="gpuModel"></div>
+                <div class="form-group"><label>VRAM</label><input type="text" name="gpuVram"></div>
+                <div class="form-group"><label>TGP</label><input type="text" name="gpuTgp"></div>
+                <div class="form-group"><label>Boost Clock</label><input type="text" name="gpuBoost"></div>
+                <div class="form-group"><label>Ray Tracing</label><input type="text" name="gpuRt"></div>
+                <div class="form-group"><label>MUX Switch</label><input type="text" name="gpuMux"></div>
+
+                <div class="category-title">Memory</div>
+                <div class="form-group"><label>RAM Size</label><input type="text" name="ramSize"></div>
+                <div class="form-group"><label>RAM Type</label><input type="text" name="ramType"></div>
+                <div class="form-group"><label>RAM Speed</label><input type="text" name="ramSpeed"></div>
+                <div class="form-group"><label>Channels</label><input type="text" name="ramChannels"></div>
+                <div class="form-group"><label>Upgradability</label><input type="text" name="ramUpgrade"></div>
+                <div class="form-group"><label>Max RAM</label><input type="text" name="ramMax"></div>
+
+                <div class="category-title">Storage</div>
+                <div class="form-group"><label>Size</label><input type="text" name="storageSize"></div>
+                <div class="form-group"><label>Type</label><input type="text" name="storageType"></div>
+                <div class="form-group"><label>Form Factor</label><input type="text" name="storageForm"></div>
+                <div class="form-group"><label>Interface</label><input type="text" name="storageInterface"></div>
+                <div class="form-group"><label>Read/Write Speeds</label><input type="text" name="storageSpeed"></div>
+                <div class="form-group"><label>M.2 Slots</label><input type="text" name="storageSlots"></div>
+
+                <div class="category-title">Battery & Cooling</div>
+                <div class="form-group"><label>Capacity</label><input type="text" name="batCap"></div>
+                <div class="form-group"><label>Chemistry</label><input type="text" name="batChem"></div>
+                <div class="form-group"><label>Battery Life</label><input type="text" name="batLife"></div>
+                <div class="form-group"><label>Charging Watts</label><input type="text" name="batWatts"></div>
+                <div class="form-group"><label>Cooling Type</label><input type="text" name="coolType"></div>
+                <div class="form-group"><label>Fans</label><input type="text" name="coolFans"></div>
+                <div class="form-group"><label>Heat Pipes</label><input type="text" name="coolPipes"></div>
+                <div class="form-group"><label>Liquid Metal</label><input type="text" name="coolLiquid"></div>
+
+                <div class="category-title">Keyboard & Input</div>
+                <div class="form-group"><label>Layout</label><input type="text" name="kbLayout"></div>
+                <div class="form-group"><label>Travel</label><input type="text" name="kbTravel"></div>
+                <div class="form-group"><label>Switches</label><input type="text" name="kbSwitches"></div>
+                <div class="form-group"><label>Backlight</label><input type="text" name="kbBacklight"></div>
+                <div class="form-group"><label>Touchpad Size/Type</label><input type="text" name="kbTouchpad"></div>
+                <div class="form-group"><label>Stylus Support</label><input type="text" name="kbStylus"></div>
+
+                <div class="category-title">Webcam & Audio</div>
+                <div class="form-group"><label>Webcam Res</label><input type="text" name="camRes"></div>
+                <div class="form-group"><label>FPS</label><input type="text" name="camFps"></div>
+                <div class="form-group"><label>IR</label><input type="text" name="camIr"></div>
+                <div class="form-group"><label>Privacy Shutter</label><input type="text" name="camShutter"></div>
+                <div class="form-group"><label>Speaker Count/Wattage</label><input type="text" name="audioSpeakers"></div>
+                <div class="form-group"><label>Tuning</label><input type="text" name="audioTuning"></div>
+
+                <div class="category-title">Ports & Connectivity</div>
+                <div class="form-group"><label>USB-A</label><input type="text" name="portUsba"></div>
+                <div class="form-group"><label>USB-C (Thunderbolt/PD)</label><input type="text" name="portUsbc"></div>
+                <div class="form-group"><label>HDMI</label><input type="text" name="portHdmi"></div>
+                <div class="form-group"><label>SD Slot</label><input type="text" name="portSd"></div>
+                <div class="form-group"><label>Audio Jack</label><input type="text" name="portAudio"></div>
+                <div class="form-group"><label>RJ-45</label><input type="text" name="portRj45"></div>
+                <div class="form-group"><label>Wi-Fi Standard</label><input type="text" name="connWifi"></div>
+                <div class="form-group"><label>BT Version</label><input type="text" name="connBt"></div>
+                <div class="form-group"><label>5G WWAN</label><input type="text" name="conn5g"></div>
+
+                <div class="category-title">Build & Security</div>
+                <div class="form-group"><label>Dimensions</label><input type="text" name="buildDim"></div>
+                <div class="form-group"><label>Weight</label><input type="text" name="buildWeight"></div>
+                <div class="form-group"><label>Materials</label><input type="text" name="buildMat"></div>
+                <div class="form-group"><label>Hinge Type</label><input type="text" name="buildHinge"></div>
+                <div class="form-group"><label>Fingerprint</label><input type="text" name="secFinger"></div>
+                <div class="form-group"><label>TPM</label><input type="text" name="secTpm"></div>
+                <div class="form-group"><label>Kensington</label><input type="text" name="secKen"></div>
+
+                <button type="button" class="generate-btn" onclick="generateHTML('laptop')">Generate Laptop Review HTML</button>
+            </form>
+        </div>
+
+
+        <textarea id="outputArea" readonly placeholder="Your generated HTML will appear here..."></textarea>
+        <button class="copy-btn" onclick="copyOutput()">Copy to Clipboard</button>
+    </div>
+
+    <script>
+        // Password Protection
+        (function() {
+            const pass = prompt("Enter Secret Key:");
+            if (pass === "Pandit2323") {
+                document.body.style.display = "block";
+            } else {
+                window.location.href = "index.html";
+            }
+        })();
+
+        function showTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
+            
+            if (type === 'mobile') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('mobileForm').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('laptopForm').classList.add('active');
+            }
+        }
+
+        function generateHTML(type) {
+            const form = type === 'mobile' ? document.getElementById('mForm') : document.getElementById('lForm');
+            const data = new FormData(form);
+            const obj = Object.fromEntries(data.entries());
+
+            let template = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${obj.brand} ${obj.model} Review | Aaditechiest</title>
+    <meta name="description" content="Detailed technical review and specifications for ${obj.brand} ${obj.model}.">
+    <style>
+        :root { --primary: #00f2ff; --bg: #050505; --card: #111; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
+        .hero { height: 60vh; background: url('${obj.heroImage}') center/cover no-referrer; display: flex; align-items: flex-end; padding: 4rem 5%; background-attachment: fixed; }
+        .hero-overlay { background: linear-gradient(transparent, var(--bg)); position: absolute; top: 0; left: 0; width: 100%; height: 60vh; z-index: 1; }
+        .hero-content { position: relative; z-index: 2; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        .spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .spec-card { background: var(--card); padding: 1.5rem; border-radius: 15px; border: 1px solid #222; }
+        .spec-card h3 { color: var(--primary); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+        .spec-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
+        .spec-label { color: #888; }
+        .buy-now { position: fixed; bottom: 2rem; right: 2rem; background: var(--primary); color: #000; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 800; box-shadow: 0 10px 20px rgba(0,242,255,0.3); z-index: 100; }
+        @media (max-width: 768px) { .spec-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="hero-overlay"></div>
+    <div class="hero">
+        <div class="hero-content">
+            <h1 style="font-size: 3rem; margin: 0;">${obj.brand} ${obj.model}</h1>
+            <p style="color: var(--primary); font-weight: 700;">Full Technical Review</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="${obj.buyLink}" class="buy-now">Buy Now @ ${obj.price}</a>
+        
+        <div class="spec-grid">`;
+
+            // Dynamic Spec Generation
+            const categories = type === 'mobile' ? [
+                { title: 'General', fields: ['brand', 'model', 'sku', 'releaseDate', 'price', 'colors', 'formFactor', 'os', 'uiSkin'] },
+                { title: 'Display', fields: ['displaySize', 'displayRes', 'displayPpi', 'displayPanel', 'displayRefresh', 'displayTouch', 'displayBrightness', 'displayAspect', 'displayHdr', 'displayGlass', 'displayAod', 'displayNotch', 'displayCurve'] },
+                { title: 'Processor', fields: ['cpuChipset', 'cpuMaker', 'cpuProcess', 'cpuArch', 'cpuP', 'cpuE', 'cpuPrime', 'cpuThreads', 'gpu', 'npu', 'isp', 'benchmarks'] },
+                { title: 'Memory', fields: ['ramSize', 'ramType', 'ramSpeed', 'ramBus', 'ramVirtual'] },
+                { title: 'Storage', fields: ['storageOptions', 'storageType', 'storageSpeed', 'sdSlot', 'sdMax'] },
+                { title: 'Rear Camera', fields: ['camCount', 'camMain', 'camUW', 'camTele', 'camMacro', 'camDepth', 'camVideo', 'camFlash'] },
+                { title: 'Front Camera', fields: ['selfieMp', 'selfieAp', 'selfieAf', 'selfieStab', 'selfieVideo'] },
+                { title: 'Battery & Charging', fields: ['batCap', 'batWired', 'batWireless', 'batReverse', 'batStd', 'batType', 'batBox'] },
+                { title: 'Connectivity', fields: ['connBands', 'connSim', 'connWifi', 'connBt', 'connNfc', 'connGps', 'connUsb', 'connIr', 'connUwb'] },
+                { title: 'Audio', fields: ['audioSpeakers', 'audioTuning', 'audioJack', 'audioMics', 'audioNc'] },
+                { title: 'Security & Build', fields: ['secFinger', 'secFace', 'buildDim', 'buildWeight', 'buildFrame', 'buildBack', 'buildIp'] },
+                { title: 'Sensors', fields: ['sensors'] },
+                { title: 'Software', fields: ['softOs', 'softUpdate', 'softAi'] },
+                { title: 'In-Box', fields: ['boxContents'] }
+            ] : [
+                { title: 'General', fields: ['brand', 'model', 'series', 'releaseDate', 'price', 'targetUse', 'os', 'warranty'] },
+                { title: 'Processor', fields: ['cpuBrand', 'cpuName', 'cpuGen', 'cpuSeries', 'cpuProcess', 'cpuArch', 'cpuP', 'cpuE', 'cpuThreads', 'cpuClock', 'cpuCache', 'cpuTdp', 'cpuIgpu', 'cpuNpu'] },
+                { title: 'Display', fields: ['displaySize', 'displayRes', 'displayPpi', 'displayPanel', 'displayRefresh', 'displayResponse', 'displayTouch', 'displayAspect', 'displayBrightness', 'displayGamut', 'displayHdr', 'displayFinish'] },
+                { title: 'Graphics', fields: ['gpuIgpu', 'gpuBrand', 'gpuModel', 'gpuVram', 'gpuTgp', 'gpuBoost', 'gpuRt', 'gpuMux'] },
+                { title: 'Memory', fields: ['ramSize', 'ramType', 'ramSpeed', 'ramChannels', 'ramUpgrade', 'ramMax'] },
+                { title: 'Storage', fields: ['storageSize', 'storageType', 'storageForm', 'storageInterface', 'storageSpeed', 'storageSlots'] },
+                { title: 'Battery & Cooling', fields: ['batCap', 'batChem', 'batLife', 'batWatts', 'coolType', 'coolFans', 'coolPipes', 'coolLiquid'] },
+                { title: 'Keyboard & Input', fields: ['kbLayout', 'kbTravel', 'kbSwitches', 'kbBacklight', 'kbTouchpad', 'kbStylus'] },
+                { title: 'Webcam & Audio', fields: ['camRes', 'camFps', 'camIr', 'camShutter', 'audioSpeakers', 'audioTuning'] },
+                { title: 'Ports & Connectivity', fields: ['portUsba', 'portUsbc', 'portHdmi', 'portSd', 'portAudio', 'portRj45', 'connWifi', 'connBt', 'conn5g'] },
+                { title: 'Build & Security', fields: ['buildDim', 'buildWeight', 'buildMat', 'buildHinge', 'secFinger', 'secTpm', 'secKen'] }
+            ];
+
+
+            categories.forEach(cat => {
+                template += `
+            <div class="spec-card">
+                <h3>${cat.title}</h3>`;
+                cat.fields.forEach(field => {
+                    if (obj[field]) {
+                        template += `
+                <div class="spec-item">
+                    <span class="spec-label">${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span>
+                    <span class="spec-value">${obj[field]}</span>
+                </div>`;
+                    }
+                });
+                template += `
+            </div>`;
+            });
+
+            template += `
+        </div>
+    </div>
+
+    <!-- Schema.org Rich Snippet -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "${obj.brand} ${obj.model}",
+      "image": "${obj.heroImage}",
+      "description": "Technical specifications for ${obj.brand} ${obj.model}",
+      "brand": {
+        "@type": "Brand",
+        "name": "${obj.brand}"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "${obj.buyLink}",
+        "priceCurrency": "USD",
+        "price": "${obj.price.replace(/[^0-9.]/g, '')}",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    <\/script>
+</body>
+</html>`;
+
+            document.getElementById('outputArea').value = template;
+        }
+
+        function copyOutput() {
+            const copyText = document.getElementById("outputArea");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("Code copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
