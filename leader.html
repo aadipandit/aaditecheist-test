@@ -632,17 +632,26 @@
                 if (!grid) return;
 
                 const filtered = existingItems.filter(item => {
+                    if (!item.data) return false;
                     if (filter === 'all') return true;
                     // Check if it's mobile or laptop based on data structure
-                    const isMobile = item.data.displayPanel !== undefined || item.data.camMain !== undefined;
-                    const isLaptop = item.data.cpuBrand !== undefined || item.data.gpuBrand !== undefined;
+                    const isMobile = item.data.displayPanel !== undefined || item.data.camMain !== undefined || item.data.selfieMp !== undefined;
+                    const isLaptop = item.data.cpuBrand !== undefined || item.data.gpuBrand !== undefined || item.data.kbLayout !== undefined;
                     return filter === 'mobile' ? isMobile : isLaptop;
                 });
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #666;">No items found. Please create some Mobile or Laptop reviews first.</div>';
+                    return;
+                }
 
                 grid.innerHTML = filtered.map(item => `
                     <div class="selectable-item ${selectedItems[ctx].includes(item.id) ? 'selected' : ''}" 
                          onclick="toggleItemSelection('${item.id}', '${ctx}')">
-                        ${item.name}
+                        <img src="${item.data.heroImage || 'https://picsum.photos/seed/' + item.id + '/200/200'}" 
+                             style="width: 100%; height: 80px; object-fit: cover; border-radius: 5px; margin-bottom: 0.5rem;" 
+                             referrerpolicy="no-referrer">
+                        <div style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
                     </div>
                 `).join('');
             });
@@ -820,7 +829,7 @@
             const item1Specs = item1.data;
             const item2Specs = item2.data;
 
-            const allKeys = [...new Set([...Object.keys(item1Specs), ...Object.keys(item2Specs)])];
+            const allKeys = [...new Set([...Object.keys(item1Specs), ...Object.keys(item2Specs)])].filter(k => !['heroImage', 'buyLink'].includes(k));
 
             let template = `<!DOCTYPE html>
 <html lang="en">
@@ -830,6 +839,8 @@
     <title>${title} | Aaditechiest</title>
     <style>
         ${commonStyles}
+        .comp-header { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem; }
+        .comp-img { width: 100%; height: 250px; object-fit: contain; border-radius: 15px; background: #111; padding: 1rem; }
         table { width: 100%; border-collapse: collapse; margin-top: 2rem; background: var(--card); border-radius: 15px; overflow: hidden; }
         th, td { padding: 1.5rem; text-align: left; border-bottom: 1px solid #222; }
         th { background: #222; color: var(--primary); }
@@ -840,6 +851,19 @@
     ${commonNav}
     <div class="container">
         <h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">${title}</h1>
+        
+        <div class="comp-header">
+            <div></div>
+            <div style="text-align: center;">
+                <img src="${item1.data.heroImage}" class="comp-img" referrerpolicy="no-referrer">
+                <h2 style="margin-top: 1rem;">${item1.name}</h2>
+            </div>
+            <div style="text-align: center;">
+                <img src="${item2.data.heroImage}" class="comp-img" referrerpolicy="no-referrer">
+                <h2 style="margin-top: 1rem;">${item2.name}</h2>
+            </div>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -886,29 +910,39 @@
     <title>${title} | Aaditechiest</title>
     <style>
         ${commonStyles}
-        .item-card { background: var(--card); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; border: 1px solid #222; }
-        .item-rank { color: var(--primary); font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
-        .item-title { font-size: 2rem; margin-bottom: 1rem; }
-        .item-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; color: var(--text-dim); }
-        .spec-item { border-bottom: 1px solid #222; padding: 0.5rem 0; }
+        .item-card { background: var(--card); padding: 2rem; border-radius: 20px; margin-bottom: 3rem; border: 1px solid #222; display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
+        .item-rank { color: var(--primary); font-size: 2rem; font-weight: 800; }
+        .item-img { width: 100%; height: 250px; object-fit: contain; background: #000; border-radius: 10px; }
+        .item-title { font-size: 2.5rem; margin: 0 0 1rem 0; }
+        .item-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; color: var(--text-dim); font-size: 0.9rem; }
+        .spec-item { border-bottom: 1px solid #222; padding: 0.4rem 0; }
+        @media (max-width: 768px) { .item-card { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     ${commonNav}
     <div class="container">
-        <h1 style="font-size: 3rem; text-align: center;">${title}</h1>
-        <p style="text-align: center; color: var(--text-dim); margin-bottom: 4rem;">${desc}</p>
+        <h1 style="font-size: 4rem; text-align: center; margin-bottom: 1rem;">${title}</h1>
+        <p style="text-align: center; color: var(--text-dim); margin-bottom: 5rem; font-size: 1.2rem; max-width: 800px; margin-left: auto; margin-right: auto;">${desc}</p>
         
         ${items.map((item, index) => `
         <div class="item-card">
-            <div class="item-rank">#${index + 1}</div>
-            <h2 class="item-title">${item.name}</h2>
-            <div class="item-specs">
-                ${Object.entries(item.data).slice(0, 8).map(([k, v]) => `
-                    <div class="spec-item"><strong>${k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> ${v}</div>
-                `).join('')}
+            <div>
+                <div class="item-rank">#${index + 1}</div>
+                <img src="${item.data.heroImage}" class="item-img" referrerpolicy="no-referrer">
             </div>
-            <a href="${item.id}.html" style="display: inline-block; margin-top: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 700;">Read Full Review →</a>
+            <div>
+                <h2 class="item-title">${item.name}</h2>
+                <div class="item-specs">
+                    ${Object.entries(item.data).filter(([k]) => !['heroImage', 'buyLink'].includes(k)).slice(0, 10).map(([k, v]) => `
+                        <div class="spec-item"><strong>${k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> ${v}</div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <a href="${item.id}.html" style="background: #222; color: white; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Full Review</a>
+                    <a href="${item.data.buyLink}" style="background: var(--primary); color: black; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 800;">Buy Now</a>
+                </div>
+            </div>
         </div>
         `).join('')}
     </div>
@@ -939,21 +973,28 @@
     <title>${title} | Aaditechiest</title>
     <style>
         ${commonStyles}
-        .seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .seg-card { background: var(--card); padding: 1.5rem; border-radius: 15px; border: 1px solid #222; }
-        .seg-card h3 { color: var(--primary); margin-top: 0; }
+        .seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .seg-card { background: var(--card); border-radius: 20px; border: 1px solid #222; overflow: hidden; transition: transform 0.3s; }
+        .seg-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .seg-img { width: 100%; height: 200px; object-fit: contain; background: #000; padding: 1rem; }
+        .seg-info { padding: 1.5rem; }
+        .seg-card h3 { color: var(--text); margin: 0 0 0.5rem 0; font-size: 1.2rem; }
+        .seg-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
     ${commonNav}
     <div class="container">
-        <h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">${title}</h1>
+        <h1 style="font-size: 3.5rem; text-align: center; margin-bottom: 4rem;">${title}</h1>
         <div class="seg-grid">
             ${items.map(item => `
             <div class="seg-card">
-                <h3>${item.name}</h3>
-                <p style="color: var(--text-dim); font-size: 0.9rem;">${item.data.price || 'Price N/A'}</p>
-                <a href="${item.id}.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">View Details</a>
+                <img src="${item.data.heroImage}" class="seg-img" referrerpolicy="no-referrer">
+                <div class="seg-info">
+                    <h3>${item.name}</h3>
+                    <div class="seg-price">${item.data.price || 'Price N/A'}</div>
+                    <a href="${item.id}.html" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View Full Review →</a>
+                </div>
             </div>
             `).join('')}
         </div>
@@ -994,9 +1035,10 @@
 </head>
 <body>
     ${commonNav}
-    <div class="hero-overlay"></div>
-    <div class="hero">
-        <div class="hero-content">
+    <div class="hero" style="position: relative; height: 60vh; overflow: hidden; display: flex; align-items: flex-end; padding: 4rem 5%;">
+        <img src="${obj.heroImage}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" referrerpolicy="no-referrer">
+        <div class="hero-overlay" style="background: linear-gradient(transparent, var(--bg)); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
+        <div class="hero-content" style="position: relative; z-index: 2;">
             <h1 style="font-size: 3rem; margin: 0;">${obj.brand} ${obj.model}</h1>
             <p style="color: var(--primary); font-weight: 700;">Full Technical Review</p>
         </div>
