@@ -3,574 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaditechiest | Premium Tech Reviews & Comparisons</title>
-    <meta name="description" content="Expert tech reviews, detailed comparisons, and the best gadget recommendations. Find the best in budget, best of 5, and more at Aaditechiest.">
-    <meta name="keywords" content="tech reviews, smartphone comparison, laptop reviews, best gadgets 2024, Aaditechiest">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://aaditechiest.github.io/">
-    <meta property="og:title" content="Aaditechiest | Premium Tech Reviews">
-    <meta property="og:description" content="Expert tech reviews and detailed comparisons.">
-    <meta property="og:image" content="https://picsum.photos/seed/tech/1200/630">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Aaditechiest | Premium Tech Reviews">
-    <meta property="twitter:description" content="Expert tech reviews and detailed comparisons.">
-
+    <title>TechReview - Expert Tech Buying Guides</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Anton&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import "tailwindcss";
         :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg: #050505;
-            --card-bg: #111111;
-            --text: #ffffff;
-            --text-dim: #a0a0a0;
-            --accent: #ff0055;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg: #ffffff;
+            --ink: #000000;
+            --accent: #2563eb;
         }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--ink); }
+        .display-title { font-family: 'Anton', sans-serif; text-transform: uppercase; line-height: 0.9; letter-spacing: -0.02em; }
+        .editorial-font { font-family: 'Playfair Display', serif; }
+        
+        .hero-text { font-size: 15vw; }
+        @media (min-width: 768px) { .hero-text { font-size: 12vw; } }
 
-        [data-theme="light"] {
-            --bg: #f5f5f7;
-            --card-bg: #ffffff;
-            --text: #1d1d1f;
-            --text-dim: #6e6e73;
-            --glass: rgba(0, 0, 0, 0.05);
-            --border: rgba(0, 0, 0, 0.1);
-        }
+        .marquee { overflow: hidden; white-space: nowrap; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0; }
+        .marquee-content { display: inline-block; animation: marquee 20s linear infinite; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
-            overflow-x: hidden;
-        }
-
-        /* Navbar */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(var(--bg), 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 1;
-            color: var(--primary);
-        }
-
-        .theme-toggle {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Hero Section */
-        header {
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 5%;
-            background: radial-gradient(circle at center, rgba(112, 0, 255, 0.15) 0%, transparent 70%);
-        }
-
-        header h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -2px;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            color: var(--text-dim);
-            max-width: 600px;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            padding: 1rem 2.5rem;
-            border-radius: 100px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 10px 20px rgba(0, 242, 255, 0.2);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0, 242, 255, 0.3);
-        }
-
-        /* Sections */
-        section {
-            padding: 5rem 5%;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 3rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        /* Grid Layouts */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        /* Card Design */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s;
-            position: relative;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-        }
-
-        .card-img {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            background: #222;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
-        .card-tag {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-        }
-
-        .card-desc {
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            margin-bottom: 1.5rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .price {
-            font-weight: 800;
-            font-size: 1.1rem;
-        }
-
-        .buy-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
-            padding: 5rem 5% 2rem;
-            background: #000;
-            color: white;
-            border-top: 1px solid var(--border);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
-        }
-
-        .footer-logo {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .footer-links h4 {
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-links a {
-            color: #888;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .copyright {
-            text-align: center;
-            color: #555;
-            font-size: 0.8rem;
-            padding-top: 2rem;
-            border-top: 1px solid #222;
-        }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .footer-grid { grid-template-columns: 1fr 1fr; }
-        }
+        .card-hover { transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .card-hover:hover { transform: scale(1.02); }
     </style>
 </head>
-<body>
-
-    <nav>
-        <a href="index.html" class="logo">Aaditechiest</a>
-        <div class="nav-links">
-            <a href="#best-of-5">Best of 5</a>
-            <a href="#budget">Budget</a>
-            <a href="#segments">Segments</a>
-            <a href="#comparisons">Comparisons</a>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
+<body class="antialiased">
+    <nav class="bg-white/80 backdrop-blur-md border-b border-black/5 sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-black tracking-tighter">TECH<span class="text-blue-600">REVIEW</span></span>
+                </div>
+                <div class="hidden lg:flex items-center space-x-10">
+                    <a href="/" class="text-sm font-bold uppercase tracking-widest text-blue-600">Home</a>
+                    <a href="/comparisons.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Comparisons</a>
+                    <a href="/best-of-5.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Best of 5</a>
+                    <a href="/segments.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Segments</a>
+                    <a href="/budget.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Budget</a>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="/leader.html" class="text-xs font-black uppercase tracking-[0.2em] px-6 py-3 bg-black text-white hover:bg-blue-600 transition-all rounded-full">Leader Panel</a>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <header>
-        <h1>The Future of Tech, <br><span style="color: var(--primary)">Reviewed.</span></h1>
-        <p>Unbiased, deep-dive technical analysis and comparisons of the latest smartphones and laptops. We do the research, you make the choice.</p>
-        <a href="#best-of-5" class="btn btn-primary">Explore Reviews</a>
+    <header class="relative pt-20 pb-32 overflow-hidden border-b border-black">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+                <div class="lg:col-span-8">
+                    <h1 class="display-title hero-text mb-8">CHOOSE<br>BETTER<br>TECH.</h1>
+                    <p class="editorial-font text-2xl md:text-4xl italic text-gray-600 max-w-2xl">The most rigorous testing, the clearest advice, and the best tech for your life.</p>
+                </div>
+                <div class="lg:col-span-4 hidden lg:block">
+                    <div class="border-l-2 border-black pl-8 py-4">
+                        <span class="text-xs font-black uppercase tracking-widest text-blue-600 block mb-2">Editor's Note</span>
+                        <p class="text-sm font-medium leading-relaxed">We don't just list specs. We test every device in real-world scenarios to ensure you get the performance you pay for.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <section id="recent-reviews">
-        <h2 class="section-title">Recent Reviews</h2>
-        <div class="grid" id="recent-reviews-grid">
-            <!-- Dynamic reviews will appear here -->
+    <div class="marquee bg-black text-white">
+        <div class="marquee-content">
+            <span class="mx-8 font-black uppercase tracking-widest text-sm">LATEST REVIEWS • BEST OF 2026 • SMARTPHONE COMPARISONS • LAPTOP GUIDES • BUDGET TECH • LATEST REVIEWS • BEST OF 2026 • SMARTPHONE COMPARISONS • LAPTOP GUIDES • BUDGET TECH •</span>
+            <span class="mx-8 font-black uppercase tracking-widest text-sm">LATEST REVIEWS • BEST OF 2026 • SMARTPHONE COMPARISONS • LAPTOP GUIDES • BUDGET TECH • LATEST REVIEWS • BEST OF 2026 • SMARTPHONE COMPARISONS • LAPTOP GUIDES • BUDGET TECH •</span>
         </div>
-    </section>
+    </div>
 
-    <section id="best-of-5">
-        <h2 class="section-title">Best of 5</h2>
-        <div class="grid">
-            <div class="card">
-                <img src="https://picsum.photos/seed/phone1/600/400" alt="Phone" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Smartphones</span>
-                    <h3 class="card-title">Top 5 Flagship Killers 2024</h3>
-                    <p class="card-desc">We ranked the best performance-to-price ratio smartphones available right now.</p>
-                    <div class="card-footer">
-                        <span class="price">From $499</span>
-                        <a href="#" class="buy-link">Read Review →</a>
+    <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <!-- Featured Section -->
+        <section class="mb-32">
+            <div class="flex items-center justify-between mb-12 border-b-2 border-black pb-4">
+                <h2 class="display-title text-4xl">HEAD TO HEAD</h2>
+                <a href="/comparisons.html" class="text-xs font-black uppercase tracking-widest hover:text-blue-600">View All Comparisons <i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+            <div id="featuredComparisons" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
+        <!-- Best of 5 Section -->
+        <section class="mb-32">
+            <div class="flex items-center justify-between mb-12 border-b-2 border-black pb-4">
+                <h2 class="display-title text-4xl">THE BEST OF 5</h2>
+                <a href="/best-of-5.html" class="text-xs font-black uppercase tracking-widest hover:text-blue-600">View All Rankings <i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+            <div id="featuredB5" class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
+        <!-- Segments Section -->
+        <section>
+            <div class="flex items-center justify-between mb-12 border-b-2 border-black pb-4">
+                <h2 class="display-title text-4xl">MARKET SEGMENTS</h2>
+                <a href="/segments.html" class="text-xs font-black uppercase tracking-widest hover:text-blue-600">Explore All Segments <i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+            <div id="featuredSegments" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black text-white py-24 mt-32">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-8">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bolt text-black text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-black tracking-tighter">TECH<span class="text-blue-400">REVIEW</span></span>
+                    </div>
+                    <p class="text-gray-400 max-w-md mb-8">The world's most trusted source for technology reviews and buying advice. We help millions of people find the best tech for their needs.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
-            </div>
-            <div class="card">
-                <img src="https://picsum.photos/seed/laptop1/600/400" alt="Laptop" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Laptops</span>
-                    <h3 class="card-title">Top 5 Productivity Laptops</h3>
-                    <p class="card-desc">The ultimate machines for creators and professionals in 2024.</p>
-                    <div class="card-footer">
-                        <span class="price">From $899</span>
-                        <a href="#" class="buy-link">Read Review →</a>
-                    </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest mb-8 text-blue-400">Categories</h4>
+                    <ul class="space-y-4 text-sm font-bold uppercase tracking-widest">
+                        <li><a href="/comparisons.html" class="hover:text-blue-400">Comparisons</a></li>
+                        <li><a href="/best-of-5.html" class="hover:text-blue-400">Best of 5</a></li>
+                        <li><a href="/segments.html" class="hover:text-blue-400">Segments</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-widest mb-8 text-blue-400">Admin</h4>
+                    <ul class="space-y-4 text-sm font-bold uppercase tracking-widest">
+                        <li><a href="/leader.html" class="hover:text-blue-400">Leader Panel</a></li>
+                        <li><a href="#" class="hover:text-blue-400">Contact Us</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="card">
-                <img src="https://picsum.photos/seed/watch1/600/400" alt="Watch" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Wearables</span>
-                    <h3 class="card-title">Best 5 Smartwatches</h3>
-                    <p class="card-desc">Health tracking and style combined. Here are our top picks.</p>
-                    <div class="card-footer">
-                        <span class="price">From $199</span>
-                        <a href="#" class="buy-link">Read Review →</a>
-                    </div>
-                </div>
+            <div class="mt-24 pt-12 border-t border-white/10 text-center text-xs font-bold uppercase tracking-widest text-gray-500">
+                © 2026 TechReview. Built for the future of tech journalism.
             </div>
-        </div>
-    </section>
-
-    <section id="budget" style="background: var(--glass);">
-        <h2 class="section-title">Best in Budget</h2>
-        <div class="grid">
-            <!-- Placeholder cards -->
-            <div class="card">
-                <img src="https://picsum.photos/seed/budget1/600/400" alt="Budget Phone" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Budget King</span>
-                    <h3 class="card-title">Best Phone Under $300</h3>
-                    <p class="card-desc">Incredible value without compromising on the essentials.</p>
-                    <div class="card-footer">
-                        <span class="price">$279</span>
-                        <a href="#" class="buy-link">Check Price</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <img src="https://picsum.photos/seed/budget2/600/400" alt="Budget Laptop" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Student Choice</span>
-                    <h3 class="card-title">Best Laptop Under $600</h3>
-                    <p class="card-desc">Perfect for students and everyday office tasks.</p>
-                    <div class="card-footer">
-                        <span class="price">$549</span>
-                        <a href="#" class="buy-link">Check Price</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="segments">
-        <h2 class="section-title">Best in Segments</h2>
-        <div class="grid">
-            <div class="card">
-                <img src="https://picsum.photos/seed/gaming/600/400" alt="Gaming" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Gaming</span>
-                    <h3 class="card-title">Ultimate Gaming Setup 2024</h3>
-                    <p class="card-desc">High refresh rates and low latency. The best gear for gamers.</p>
-                    <a href="#" class="buy-link">Explore Segment</a>
-                </div>
-            </div>
-            <div class="card">
-                <img src="https://picsum.photos/seed/camera/600/400" alt="Camera" class="card-img" referrerPolicy="no-referrer">
-                <div class="card-content">
-                    <span class="card-tag">Photography</span>
-                    <h3 class="card-title">Best Camera Phones</h3>
-                    <p class="card-desc">Capture every detail with these mobile photography powerhouses.</p>
-                    <a href="#" class="buy-link">Explore Segment</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="comparisons" style="background: var(--glass);">
-        <h2 class="section-title">Comparisons</h2>
-        <div class="grid">
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-tag">Versus</span>
-                    <h3 class="card-title">iPhone 15 Pro vs Samsung S24 Ultra</h3>
-                    <p class="card-desc">The ultimate flagship battle. Which one should you buy?</p>
-                    <a href="#" class="buy-link">View Comparison</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-tag">Versus</span>
-                    <h3 class="card-title">MacBook Air M3 vs Dell XPS 13</h3>
-                    <p class="card-desc">Thin, light, and powerful. We compare the best ultrabooks.</p>
-                    <a href="#" class="buy-link">View Comparison</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-grid">
-            <div>
-                <a href="#" class="footer-logo logo">Aaditechiest</a>
-                <p style="color: #888; margin-top: 1rem;">Your trusted source for honest tech reviews and comparisons. We help you navigate the complex world of gadgets with ease.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Categories</h4>
-                <ul>
-                    <li><a href="#">Smartphones</a></li>
-                    <li><a href="#">Laptops</a></li>
-                    <li><a href="#">Tablets</a></li>
-                    <li><a href="#">Accessories</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Affiliate Disclosure</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Follow Us</h4>
-                <ul>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">YouTube</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            &copy; 2024 Aaditechiest. All rights reserved. Designed for tech enthusiasts.
         </div>
     </footer>
 
     <script>
-        // Theme Toggle Logic
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                body.removeAttribute('data-theme');
-                themeToggle.textContent = '🌙';
-            } else {
-                body.setAttribute('data-theme', 'light');
-                themeToggle.textContent = '☀️';
-            }
-        });
-
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    e.preventDefault();
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Dynamic Page Listing
-        async function fetchRecentReviews() {
+        async function loadHomeContent() {
             try {
-                const response = await fetch('/api/list-pages');
-                const pages = await response.json();
-                const grid = document.getElementById('recent-reviews-grid');
-                
-                if (pages.length === 0) {
-                    grid.innerHTML = '<p style="color: var(--text-dim); grid-column: 1/-1; text-align: center;">No reviews published yet.</p>';
-                    return;
-                }
+                const response = await fetch('/api/list-items');
+                const items = await response.json();
 
-                // Sort by modified time (newest first)
-                pages.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
-
-                grid.innerHTML = pages.map(page => {
-                    const title = page.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
-                    return `
-                        <div class="card">
-                            <div class="card-content">
-                                <span class="card-tag">New Review</span>
-                                <h3 class="card-title">${title}</h3>
-                                <p class="card-desc">Check out our latest deep-dive technical review for ${title}.</p>
-                                <div class="card-footer">
-                                    <a href="${page.url}" class="buy-link">Read Full Review →</a>
+                // Load Comparisons
+                const comparisons = items.filter(i => i.data.pageType === 'comparison').slice(0, 3);
+                const compContainer = document.getElementById('featuredComparisons');
+                if (comparisons.length > 0) {
+                    compContainer.innerHTML = comparisons.map(comp => `
+                        <a href="/${comp.id}.html" class="card-hover group">
+                            <div class="aspect-video bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5 overflow-hidden">
+                                <div class="flex items-center gap-4 w-full">
+                                    <img src="${comp.data.items[0]?.heroImage || 'https://picsum.photos/seed/c1/200/200'}" class="h-24 w-auto object-contain" referrerpolicy="no-referrer">
+                                    <div class="text-xl font-black italic text-gray-300">VS</div>
+                                    <img src="${comp.data.items[1]?.heroImage || 'https://picsum.photos/seed/c2/200/200'}" class="h-24 w-auto object-contain" referrerpolicy="no-referrer">
                                 </div>
                             </div>
-                        </div>
-                    `;
-                }).join('');
+                            <h3 class="text-xl font-black uppercase mb-2 group-hover:text-blue-600">${comp.data.title}</h3>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Comparison Guide</span>
+                        </a>
+                    `).join('');
+                } else {
+                    compContainer.innerHTML = '<p class="text-gray-400 col-span-full">No comparisons generated yet.</p>';
+                }
+
+                // Load Best of 5
+                const bestOfs = items.filter(i => i.data.pageType === 'bestof5').slice(0, 2);
+                const b5Container = document.getElementById('featuredB5');
+                if (bestOfs.length > 0) {
+                    b5Container.innerHTML = bestOfs.map(list => `
+                        <a href="/${list.id}.html" class="flex flex-col md:flex-row gap-8 items-center card-hover group">
+                            <div class="w-full md:w-1/2 aspect-square bg-gray-100 flex items-center justify-center p-8 border border-black/5">
+                                <img src="${list.data.items[0]?.heroImage || 'https://picsum.photos/seed/b5/400/400'}" class="h-full w-auto object-contain" referrerpolicy="no-referrer">
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-4 block">Top 5 Rankings</span>
+                                <h3 class="text-3xl font-black uppercase mb-4 group-hover:text-blue-600">${list.data.title}</h3>
+                                <p class="text-gray-500 mb-6 line-clamp-2">${list.data.desc || 'The definitive guide to the best tech in this category.'}</p>
+                                <span class="text-xs font-black uppercase tracking-widest border-b-2 border-black pb-1">Read The List</span>
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    b5Container.innerHTML = '<p class="text-gray-400 col-span-full">No Best of 5 lists generated yet.</p>';
+                }
+
+                // Load Segments
+                const segments = items.filter(i => i.data.pageType === 'segments').slice(0, 4);
+                const segContainer = document.getElementById('featuredSegments');
+                if (segments.length > 0) {
+                    segContainer.innerHTML = segments.map(seg => `
+                        <a href="/${seg.id}.html" class="card-hover group">
+                            <div class="aspect-square bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5">
+                                <img src="${seg.data.items[0]?.heroImage || 'https://picsum.photos/seed/s1/200/200'}" class="h-32 w-auto object-contain" referrerpolicy="no-referrer">
+                            </div>
+                            <h3 class="text-lg font-black uppercase mb-1 group-hover:text-blue-600">${seg.data.title}</h3>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">${seg.data.name}</p>
+                        </a>
+                    `).join('');
+                } else {
+                    segContainer.innerHTML = '<p class="text-gray-400 col-span-full">No segments generated yet.</p>';
+                }
+
             } catch (error) {
-                console.error("Error fetching reviews:", error);
+                console.error('Error loading home content:', error);
             }
         }
-        fetchRecentReviews();
+
+        window.onload = loadHomeContent;
     </script>
 </body>
 </html>

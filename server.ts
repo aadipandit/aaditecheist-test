@@ -67,10 +67,15 @@ async function startServer() {
     try {
       fs.writeFileSync(filePath, content);
       
-      // Save metadata if provided (for comparisons/lists)
+      // Save metadata if provided (for comparisons/lists/reviews)
       if (itemData) {
         const metadataPath = path.join(dataDir, `${safeFilename}.json`);
-        fs.writeFileSync(metadataPath, JSON.stringify(itemData, null, 2));
+        // Ensure pageType is included
+        fs.writeFileSync(metadataPath, JSON.stringify({
+          ...itemData,
+          filename: finalFilename,
+          updatedAt: new Date().toISOString()
+        }, null, 2));
       }
 
       console.log(`File saved: ${finalFilename}`);
@@ -226,6 +231,11 @@ async function startServer() {
 
     try {
       fs.unlinkSync(filePath);
+      // Also delete metadata if it exists
+      const metadataPath = path.join(dataDir, `${filename.replace('.html', '')}.json`);
+      if (fs.existsSync(metadataPath)) {
+        fs.unlinkSync(metadataPath);
+      }
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete file" });
