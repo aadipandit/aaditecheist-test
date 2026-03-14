@@ -436,6 +436,18 @@
             }
         })();
 
+        // Check server health on load
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                console.log("Server Health:", data);
+            } catch (error) {
+                console.error("Server Health Check Failed:", error);
+            }
+        }
+        checkHealth();
+
         function showTab(type) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
@@ -593,6 +605,11 @@
                     body: JSON.stringify({ filename, content })
                 });
 
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: response.statusText }));
+                    throw new Error(errorData.error || `Server error: ${response.status}`);
+                }
+
                 const result = await response.json();
                 if (result.success) {
                     statusDiv.innerHTML = `Successfully Deployed! <a href="${result.url}" target="_blank" style="color: var(--primary);">View Page</a>`;
@@ -602,9 +619,9 @@
                     statusDiv.style.color = "#ff0000";
                 }
             } catch (error) {
-                statusDiv.textContent = "Deployment failed. Check console.";
+                statusDiv.textContent = "Deployment failed: " + error.message;
                 statusDiv.style.color = "#ff0000";
-                console.error(error);
+                console.error("Deployment error:", error);
             }
         }
 

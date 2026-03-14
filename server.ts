@@ -13,8 +13,14 @@ async function startServer() {
 
   app.use(express.json({ limit: '50mb' }));
 
+  // Health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", time: new Date().toISOString() });
+  });
+
   // API Route to save generated pages
   app.post("/api/save-page", (req, res) => {
+    console.log("Received save-page request:", req.body.filename);
     const { filename, content } = req.body;
 
     if (!filename || !content) {
