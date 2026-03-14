@@ -97,9 +97,10 @@
                 listContainer.innerHTML = budgetItems.map(item => {
                     const firstItem = item.data.items[0] || { name: 'Product', heroImage: '' };
                     const colorClass = item.data.pageType === 'bestof5' ? 'emerald' : 'violet';
+                    const pageUrl = item.data.url || `/${item.id}.html`;
                     
                     return `
-                        <a href="/${item.id}.html" class="card bg-white rounded-2xl overflow-hidden border border-gray-100 group">
+                        <a href="${pageUrl}" class="card bg-white rounded-2xl overflow-hidden border border-gray-100 group">
                             <div class="relative h-48 bg-gray-50 flex items-center justify-center p-6">
                                 <img src="${firstItem.heroImage || 'https://picsum.photos/seed/budget/400/300'}" 
                                      class="h-full w-auto object-contain" 

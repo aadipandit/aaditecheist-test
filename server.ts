@@ -25,7 +25,16 @@ async function startServer() {
     fs.mkdirSync(dataDir);
   }
 
-  // Serve newly created HTML files from the root
+  // Ensure subdirectories exist for generated content
+  const subDirs = ['comparison', 'best-of', 'budget', 'segment', 'mobile', 'laptop'];
+  subDirs.forEach(dir => {
+    const dirPath = path.join(process.cwd(), dir);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath);
+    }
+  });
+
+  // Serve newly created HTML files from the root and subdirectories
   app.use((req, res, next) => {
     if (req.url.endsWith('.html') && req.method === 'GET') {
       const filePath = path.join(process.cwd(), req.url);
@@ -53,7 +62,7 @@ async function startServer() {
   // API Route to save generated pages and metadata
   app.post("/api/save-page", (req, res) => {
     console.log("Received save-page request:", req.body.filename);
-    const { filename, content, itemData } = req.body;
+    const { filename, content, itemData, folder } = req.body;
 
     if (!filename || !content) {
       return res.status(400).json({ error: "Filename and content are required." });
@@ -62,7 +71,15 @@ async function startServer() {
     // Sanitize filename to prevent directory traversal
     const safeFilename = path.basename(filename).replace(/[^a-z0-9.-]/gi, '_');
     const finalFilename = safeFilename.endsWith('.html') ? safeFilename : `${safeFilename}.html`;
-    const filePath = path.join(process.cwd(), finalFilename);
+    
+    // Determine target directory
+    let targetDir = process.cwd();
+    if (folder && ['comparison', 'best-of', 'budget', 'segment', 'mobile', 'laptop'].includes(folder)) {
+      targetDir = path.join(process.cwd(), folder);
+    }
+    
+    const filePath = path.join(targetDir, finalFilename);
+    const relativeUrl = folder ? `/${folder}/${finalFilename}` : `/${finalFilename}`;
 
     try {
       fs.writeFileSync(filePath, content);
@@ -74,12 +91,14 @@ async function startServer() {
         fs.writeFileSync(metadataPath, JSON.stringify({
           ...itemData,
           filename: finalFilename,
+          folder: folder || '',
+          url: relativeUrl,
           updatedAt: new Date().toISOString()
         }, null, 2));
       }
 
-      console.log(`File saved: ${finalFilename}`);
-      res.json({ success: true, url: `/${finalFilename}` });
+      console.log(`File saved: ${filePath}`);
+      res.json({ success: true, url: relativeUrl });
     } catch (error) {
       console.error("Error saving file:", error);
       res.status(500).json({ error: "Failed to save file." });
@@ -181,24 +200,36 @@ async function startServer() {
     }
   });
 
-  // API Route to list all generated pages
+  // API Route to list all generated pages (including subdirectories)
   app.get("/api/list-pages", (req, res) => {
     try {
-      const files = fs.readdirSync(process.cwd());
-      const htmlFiles = files.filter(file => 
-        file.endsWith('.html') && 
-        file !== 'index.html' && 
-        file !== 'leader.html' &&
-        file !== '404.html'
-      ).map(file => {
-        const stats = fs.statSync(path.join(process.cwd(), file));
-        return {
-          name: file,
-          url: `/${file}`,
-          mtime: stats.mtime
-        };
+      const folders = ['', 'comparison', 'best-of', 'budget', 'segment', 'mobile', 'laptop'];
+      let allPages: any[] = [];
+
+      folders.forEach(folder => {
+        const dirPath = path.join(process.cwd(), folder);
+        if (fs.existsSync(dirPath)) {
+          const files = fs.readdirSync(dirPath);
+          const htmlFiles = files.filter(file => 
+            file.endsWith('.html') && 
+            !['index.html', 'leader.html', '404.html', 'comparisons.html', 'best-of-5.html', 'segments.html', 'budget.html'].includes(file)
+          ).map(file => {
+            const stats = fs.statSync(path.join(dirPath, file));
+            return {
+              name: file,
+              folder: folder,
+              url: folder ? `/${folder}/${file}` : `/${file}`,
+              mtime: stats.mtime
+            };
+          });
+          allPages = [...allPages, ...htmlFiles];
+        }
       });
-      res.json(htmlFiles);
+
+      // Sort by modified time descending
+      allPages.sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+      
+      res.json(allPages);
     } catch (error) {
       console.error("Error listing pages:", error);
       res.status(500).json({ error: "Failed to list pages" });
@@ -223,10 +254,14 @@ async function startServer() {
 
   // API Route to delete a page
   app.delete("/api/delete-page", (req, res) => {
-    const { filename } = req.body;
+    const { filename, folder } = req.body;
     if (!filename) return res.status(400).json({ error: "Filename required" });
 
-    const filePath = path.join(process.cwd(), filename);
+    let filePath = path.join(process.cwd(), filename);
+    if (folder) {
+      filePath = path.join(process.cwd(), folder, filename);
+    }
+    
     if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
 
     try {

@@ -89,9 +89,10 @@
                 listContainer.innerHTML = comparisons.map(comp => {
                     const item1 = comp.data.items[0] || { name: 'Item 1', heroImage: '' };
                     const item2 = comp.data.items[1] || { name: 'Item 2', heroImage: '' };
+                    const pageUrl = comp.data.url || `/${comp.id}.html`;
                     
                     return `
-                        <a href="/${comp.id}.html" class="card bg-white rounded-2xl overflow-hidden border border-gray-100 group">
+                        <a href="${pageUrl}" class="card bg-white rounded-2xl overflow-hidden border border-gray-100 group">
                             <div class="relative h-48 bg-gray-50 flex items-center justify-center p-4">
                                 <div class="flex items-center gap-4 w-full">
                                     <div class="flex-1 text-center">

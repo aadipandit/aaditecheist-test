@@ -162,7 +162,7 @@
                 const compContainer = document.getElementById('featuredComparisons');
                 if (comparisons.length > 0) {
                     compContainer.innerHTML = comparisons.map(comp => `
-                        <a href="/${comp.id}.html" class="card-hover group">
+                        <a href="${comp.data.url || '/' + comp.id + '.html'}" class="card-hover group">
                             <div class="aspect-video bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5 overflow-hidden">
                                 <div class="flex items-center gap-4 w-full">
                                     <img src="${comp.data.items[0]?.heroImage || 'https://picsum.photos/seed/c1/200/200'}" class="h-24 w-auto object-contain" referrerpolicy="no-referrer">
@@ -183,7 +183,7 @@
                 const b5Container = document.getElementById('featuredB5');
                 if (bestOfs.length > 0) {
                     b5Container.innerHTML = bestOfs.map(list => `
-                        <a href="/${list.id}.html" class="flex flex-col md:flex-row gap-8 items-center card-hover group">
+                        <a href="${list.data.url || '/' + list.id + '.html'}" class="flex flex-col md:flex-row gap-8 items-center card-hover group">
                             <div class="w-full md:w-1/2 aspect-square bg-gray-100 flex items-center justify-center p-8 border border-black/5">
                                 <img src="${list.data.items[0]?.heroImage || 'https://picsum.photos/seed/b5/400/400'}" class="h-full w-auto object-contain" referrerpolicy="no-referrer">
                             </div>
@@ -204,7 +204,7 @@
                 const segContainer = document.getElementById('featuredSegments');
                 if (segments.length > 0) {
                     segContainer.innerHTML = segments.map(seg => `
-                        <a href="/${seg.id}.html" class="card-hover group">
+                        <a href="${seg.data.url || '/' + seg.id + '.html'}" class="card-hover group">
                             <div class="aspect-square bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5">
                                 <img src="${seg.data.items[0]?.heroImage || 'https://picsum.photos/seed/s1/200/200'}" class="h-32 w-auto object-contain" referrerpolicy="no-referrer">
                             </div>

@@ -716,13 +716,14 @@
                 list.innerHTML = pages.map(page => `
                     <div style="background: #222; padding: 1rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <strong>${page.name}</strong><br>
+                            <strong>${page.name}</strong> 
+                            <span style="font-size: 0.7rem; background: #444; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">${page.folder || 'root'}</span><br>
                             <small style="color: #888;">Modified: ${new Date(page.mtime).toLocaleString()}</small>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
                             <a href="${page.url}" target="_blank" style="background: var(--primary); color: black; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; font-size: 0.8rem;">View</a>
-                            <button onclick="editPage('${page.name}')" style="background: #555; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Edit</button>
-                            <button onclick="deletePage('${page.name}')" style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Delete</button>
+                            <button onclick="editPage('${page.name}', '${page.folder}')" style="background: #555; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Edit</button>
+                            <button onclick="deletePage('${page.name}', '${page.folder}')" style="background: #ff0000; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Delete</button>
                         </div>
                     </div>
                 `).join('');
@@ -731,25 +732,26 @@
             }
         }
 
-        async function editPage(filename) {
+        async function editPage(filename, folder) {
             try {
-                const response = await fetch(`/api/get-page?filename=${filename}`);
+                const fullPath = folder ? `${folder}/${filename}` : filename;
+                const response = await fetch(`/api/get-page?filename=${fullPath}`);
                 const data = await response.json();
                 document.getElementById('outputArea').value = data.content;
                 document.getElementById('deployFilename').value = filename.replace('.html', '');
-                alert("Page content loaded into editor. You can now edit and save.");
+                alert(`Page content loaded from ${fullPath}.`);
             } catch (error) {
                 alert("Failed to load page content.");
             }
         }
 
-        async function deletePage(filename) {
-            if (!confirm(`Are you sure you want to delete ${filename}?`)) return;
+        async function deletePage(filename, folder) {
+            if (!confirm(`Are you sure you want to delete ${filename} from ${folder || 'root'}?`)) return;
             try {
                 const response = await fetch('/api/delete-page', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ filename })
+                    body: JSON.stringify({ filename, folder })
                 });
                 const result = await response.json();
                 if (result.success) {
@@ -1179,6 +1181,19 @@
                 itemData.pageType = pageType;
             }
 
+            // Determine target folder
+            let folder = '';
+            if (pageType === 'comparison') folder = 'comparison';
+            else if (pageType === 'bestof5') folder = 'best-of';
+            else if (pageType === 'segments') folder = 'segment';
+            else if (pageType === 'mobile') folder = 'mobile';
+            else if (pageType === 'laptop') folder = 'laptop';
+
+            // Special case for budget
+            if (itemData && itemData.title && itemData.title.toLowerCase().includes('budget')) {
+                folder = 'budget';
+            }
+
             if (!filename || !content) {
                 alert("Please generate content and provide a filename first.");
                 return;
@@ -1191,7 +1206,7 @@
                 const response = await fetch('/api/save-page', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ filename, content, itemData })
+                    body: JSON.stringify({ filename, content, itemData, folder })
                 });
 
                 if (!response.ok) {
