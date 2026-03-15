@@ -1,5 +1,26 @@
 [
   {
+    "id": "what",
+    "data": {
+      "title": "",
+      "items": [
+        {
+          "id": "123",
+          "heroImage": ""
+        },
+        {
+          "id": "-456",
+          "heroImage": ""
+        }
+      ],
+      "pageType": "comparison",
+      "filename": "what.html",
+      "folder": "comparison",
+      "url": "/comparison/what.html",
+      "updatedAt": "2026-03-15T17:14:42.347Z"
+    }
+  },
+  {
     "id": "is_this_work",
     "data": {
       "title": "",
