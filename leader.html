@@ -1271,6 +1271,65 @@
             const content = document.getElementById('outputArea').value;
             const statusDiv = document.getElementById('deployStatus');
 
+            // Determine if we should save itemData
+            let itemData = null;
+            const activeTabBtn = document.querySelector('.tab-btn.active');
+            const activeTab = activeTabBtn ? activeTabBtn.textContent.toLowerCase() : '';
+            
+            let pageType = activeTab;
+            if (activeTab === 'mobile') {
+                itemData = Object.fromEntries(new FormData(document.getElementById('mForm')).entries());
+            } else if (activeTab === 'laptop') {
+                itemData = Object.fromEntries(new FormData(document.getElementById('lForm')).entries());
+            } else if (activeTab === 'comparison') {
+                itemData = { 
+                    title: document.getElementById('compTitle').value, 
+                    items: selectedItems.comp.map(id => {
+                        const it = existingItems.find(x => x.id === id);
+                        return { id: it.id, name: it.name, heroImage: it.data.heroImage };
+                    })
+                };
+            } else if (activeTab === 'best of 5') {
+                itemData = { 
+                    title: document.getElementById('b5Title').value, 
+                    desc: document.getElementById('b5Desc').value,
+                    items: selectedItems.b5.map(id => {
+                        const it = existingItems.find(x => x.id === id);
+                        return { id: it.id, name: it.name, heroImage: it.data.heroImage };
+                    })
+                };
+                pageType = 'bestof5';
+            } else if (activeTab === 'segments') {
+                itemData = { 
+                    title: document.getElementById('segTitle').value, 
+                    name: document.getElementById('segName').value,
+                    items: selectedItems.seg.map(id => {
+                        const it = existingItems.find(x => x.id === id);
+                        return { id: it.id, name: it.name, heroImage: it.data.heroImage };
+                    })
+                };
+            }
+
+            if (itemData) {
+                itemData.pageType = pageType;
+            }
+
+            // Determine folder (same logic as deployPage)
+            let folder = '';
+            if (pageType === 'comparison') folder = 'comparison';
+            else if (pageType === 'bestof5') folder = 'best-of';
+            else if (pageType === 'segments') folder = 'segment';
+            else if (pageType === 'mobile') folder = 'mobile';
+            else if (pageType === 'laptop') folder = 'laptop';
+
+            // Special case for budget
+            const title = (document.getElementById('compTitle') ? document.getElementById('compTitle').value : '') || 
+                          (document.getElementById('b5Title') ? document.getElementById('b5Title').value : '') || 
+                          (document.getElementById('segTitle') ? document.getElementById('segTitle').value : '');
+            if (title.toLowerCase().includes('budget')) {
+                folder = 'budget';
+            }
+
             if (!filename || !content) {
                 alert("Please generate content and provide a filename first.");
                 return;
@@ -1283,7 +1342,7 @@
                 const response = await fetch('/api/push-to-github', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ filename, content })
+                    body: JSON.stringify({ filename, content, folder, itemData })
                 });
 
                 const result = await response.json();

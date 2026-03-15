@@ -199,18 +199,34 @@ async function startServer() {
 
   // API Route to push to GitHub
   app.post("/api/push-to-github", async (req, res) => {
-    const { filename, content, commitMessage } = req.body;
+    const { filename, content, commitMessage, folder, itemData } = req.body;
     
     if (!filename || !content) {
       return res.status(400).json({ error: "Filename and content are required." });
     }
 
     try {
-      // 1. Push the HTML page
       const safeFilename = path.basename(filename).replace(/[^a-z0-9.-]/gi, '_');
       const finalFilename = safeFilename.endsWith('.html') ? safeFilename : `${safeFilename}.html`;
+      const relativeUrl = folder ? `/${folder}/${finalFilename}` : `/${finalFilename}`;
+
+      // 0. Save metadata locally if provided (so data.json is accurate)
+      if (itemData) {
+        const metadataPath = path.join(dataDir, `${safeFilename}.json`);
+        fs.writeFileSync(metadataPath, JSON.stringify({
+          ...itemData,
+          filename: finalFilename,
+          folder: folder || '',
+          url: relativeUrl,
+          updatedAt: new Date().toISOString()
+        }, null, 2));
+      }
+
+      // 1. Push the HTML page
+      // Construct the path for GitHub
+      const githubPath = folder ? `${folder}/${finalFilename}` : finalFilename;
       
-      const pushResult = await pushFileToGitHub(finalFilename, content, commitMessage || `Add ${finalFilename} review page`);
+      const pushResult = await pushFileToGitHub(githubPath, content, commitMessage || `Add ${githubPath} review page`);
 
       // 2. Update and push data.json
       const items = getItemsMetadata();
@@ -237,7 +253,7 @@ async function startServer() {
       
       res.json({ 
         success: true, 
-        url: `${baseUrl}/${finalFilename}`,
+        url: `${baseUrl}${relativeUrl}`,
         githubUrl: pushResult.content.html_url
       });
     } catch (error) {
