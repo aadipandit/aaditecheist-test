@@ -775,58 +775,77 @@
         }
 
         const commonStyles = `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        :root { 
-            --primary: #00f2ff; 
-            --bg: #050505; 
-            --card: #111; 
-            --text: #fff; 
-            --text-dim: #888;
-            --border: #222;
-        }
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            line-height: 1.6;
-        }
-        nav { 
-            padding: 1rem 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid var(--border); 
-            background: rgba(5,5,5,0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; letter-spacing: -1px; }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--primary); }
-        .container { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; }
-        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 2rem; }
-        footer { padding: 4rem 5%; background: #000; text-align: center; border-top: 1px solid var(--border); color: #555; margin-top: 4rem; font-size: 0.9rem; }
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            h1 { font-size: 2.5rem; }
-        }
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Anton&display=swap" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            :root {
+                --bg: #ffffff;
+                --ink: #000000;
+                --accent: #2563eb;
+            }
+            body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--ink); margin: 0; padding: 0; }
+            .display-title { font-family: 'Anton', sans-serif; text-transform: uppercase; line-height: 0.9; letter-spacing: -0.02em; }
+            .editorial-font { font-family: 'Playfair Display', serif; }
+            .card-hover { transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+            .card-hover:hover { transform: scale(1.02); }
+            .spec-label { font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: #666; }
+        </style>
         `;
 
         const commonNav = `
-    <nav>
-        <a href="index.html" class="logo">Aaditechiest</a>
-        <div class="nav-links">
-            <a href="index.html#best-of-5">Best of 5</a>
-            <a href="index.html#budget">Budget</a>
-            <a href="index.html#segments">Segments</a>
-            <a href="index.html#comparisons">Comparisons</a>
+    <nav class="bg-white/80 backdrop-blur-md border-b border-black/5 sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="index.html" class="flex items-center gap-2 no-underline text-black">
+                    <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-black tracking-tighter uppercase">aaditechiest</span>
+                </a>
+                <div class="hidden lg:flex items-center space-x-10">
+                    <a href="index.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors no-underline text-black">Home</a>
+                    <a href="comparisons.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors no-underline text-black">Comparisons</a>
+                    <a href="best-of-5.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors no-underline text-black">Best of 5</a>
+                    <a href="segments.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors no-underline text-black">Segments</a>
+                    <a href="budget.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors no-underline text-black">Budget</a>
+                </div>
+            </div>
         </div>
     </nav>
+        `;
+
+        const commonFooter = `
+    <footer class="bg-black text-white py-24 mt-20">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                <div>
+                    <div class="flex items-center gap-2 mb-8">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bolt text-black text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-black tracking-tighter uppercase">aaditechiest</span>
+                    </div>
+                    <p class="text-gray-400 max-w-md text-lg leading-relaxed">
+                        The ultimate destination for tech enthusiasts and buyers. We cut through the noise to bring you the facts.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-10">
+                    <div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.2em] mb-8 text-blue-500">Navigation</h4>
+                        <ul class="space-y-4">
+                            <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors no-underline">Home</a></li>
+                            <li><a href="comparisons.html" class="text-gray-400 hover:text-white transition-colors no-underline">Comparisons</a></li>
+                            <li><a href="best-of-5.html" class="text-gray-400 hover:text-white transition-colors no-underline">Best of 5</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-24 pt-12 border-t border-white/10 text-center text-xs font-bold uppercase tracking-widest text-gray-500">
+                © 2026 aaditechiest. Built for the future of tech journalism.
+            </div>
+        </div>
+    </footer>
         `;
 
         function generateComparison() {
@@ -850,53 +869,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title} | Aaditechiest</title>
+    ${commonStyles}
     <style>
-        ${commonStyles}
         .comp-header { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; align-items: center; margin-bottom: 3rem; }
-        .comp-img { width: 100%; height: 250px; object-fit: contain; border-radius: 15px; background: #111; padding: 1rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 2rem; background: var(--card); border-radius: 15px; overflow: hidden; }
-        th, td { padding: 1.5rem; text-align: left; border-bottom: 1px solid #222; }
-        th { background: #222; color: var(--primary); }
-        .spec-label { font-weight: 700; color: var(--text-dim); }
+        .comp-img { width: 100%; height: 250px; object-fit: contain; border-radius: 15px; background: #f9f9f9; padding: 1rem; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; background: white; border: 2px solid black; }
+        th, td { padding: 1.5rem; text-align: left; border: 1px solid #eee; }
+        th { background: black; color: white; font-family: 'Anton', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .spec-label { background: #f9f9f9; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: #666; width: 200px; }
     </style>
 </head>
-<body>
+<body class="antialiased">
     ${commonNav}
-    <div class="container">
-        <h1 style="font-size: 3rem; text-align: center; margin-bottom: 3rem;">${title}</h1>
+    <div class="max-w-[1200px] mx-auto px-4 py-20">
+        <h1 class="display-title text-6xl text-center mb-20">${title}</h1>
         
         <div class="comp-header">
             <div></div>
-            <div style="text-align: center;">
+            <div class="text-center">
                 <img src="${item1.data.heroImage}" class="comp-img" referrerpolicy="no-referrer">
-                <h2 style="margin-top: 1rem;">${item1.name}</h2>
+                <h2 class="text-2xl font-black uppercase mt-6">${item1.name}</h2>
             </div>
-            <div style="text-align: center;">
+            <div class="text-center">
                 <img src="${item2.data.heroImage}" class="comp-img" referrerpolicy="no-referrer">
-                <h2 style="margin-top: 1rem;">${item2.name}</h2>
+                <h2 class="text-2xl font-black uppercase mt-6">${item2.name}</h2>
             </div>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Feature</th>
-                    <th>${item1.name}</th>
-                    <th>${item2.name}</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${allKeys.map(key => `
-                <tr>
-                    <td class="spec-label">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</td>
-                    <td>${item1Specs[key] || '-'}</td>
-                    <td>${item2Specs[key] || '-'}</td>
-                </tr>
-                `).join('')}
-            </tbody>
-        </table>
+        <div class="overflow-x-auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>${item1.name}</th>
+                        <th>${item2.name}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${allKeys.map(key => `
+                    <tr>
+                        <td class="spec-label">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</td>
+                        <td class="font-medium">${item1Specs[key] || '-'}</td>
+                        <td class="font-medium">${item2Specs[key] || '-'}</td>
+                    </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <footer>&copy; 2024 Aaditechiest. All rights reserved.</footer>
+    ${commonFooter}
 </body>
 </html>`;
 
@@ -921,45 +942,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title} | Aaditechiest</title>
+    ${commonStyles}
     <style>
-        ${commonStyles}
-        .item-card { background: var(--card); padding: 2rem; border-radius: 20px; margin-bottom: 3rem; border: 1px solid #222; display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
-        .item-rank { color: var(--primary); font-size: 2rem; font-weight: 800; }
-        .item-img { width: 100%; height: 250px; object-fit: contain; background: #000; border-radius: 10px; }
-        .item-title { font-size: 2.5rem; margin: 0 0 1rem 0; }
-        .item-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; color: var(--text-dim); font-size: 0.9rem; }
-        .spec-item { border-bottom: 1px solid #222; padding: 0.4rem 0; }
-        @media (max-width: 768px) { .item-card { grid-template-columns: 1fr; } }
+        .item-card { background: white; padding: 3rem; border: 2px solid black; margin-bottom: 4rem; display: grid; grid-template-columns: 350px 1fr; gap: 3rem; position: relative; }
+        .item-rank { position: absolute; top: -20px; left: -20px; background: black; color: white; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-size: 2rem; z-index: 10; }
+        .item-img { width: 100%; height: 300px; object-fit: contain; background: #f9f9f9; border: 1px solid #eee; padding: 2rem; }
+        .item-title { font-family: 'Anton', sans-serif; font-size: 3.5rem; text-transform: uppercase; line-height: 0.9; margin: 0 0 1.5rem 0; }
+        .item-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .spec-item { border-bottom: 1px solid #eee; padding: 0.6rem 0; font-size: 0.85rem; }
+        .spec-item strong { text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; color: #666; display: block; margin-bottom: 2px; }
+        @media (max-width: 1024px) { .item-card { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body>
+<body class="antialiased">
     ${commonNav}
-    <div class="container">
-        <h1 style="font-size: 4rem; text-align: center; margin-bottom: 1rem;">${title}</h1>
-        <p style="text-align: center; color: var(--text-dim); margin-bottom: 5rem; font-size: 1.2rem; max-width: 800px; margin-left: auto; margin-right: auto;">${desc}</p>
+    <div class="max-w-[1200px] mx-auto px-4 py-24">
+        <h1 class="display-title text-8xl text-center mb-6">${title}</h1>
+        <p class="editorial-font text-2xl text-center text-gray-500 mb-20 max-w-3xl mx-auto italic">${desc}</p>
         
-        ${items.map((item, index) => `
-        <div class="item-card">
-            <div>
-                <div class="item-rank">#${index + 1}</div>
-                <img src="${item.data.heroImage}" class="item-img" referrerpolicy="no-referrer">
-            </div>
-            <div>
-                <h2 class="item-title">${item.name}</h2>
-                <div class="item-specs">
-                    ${Object.entries(item.data).filter(([k]) => !['heroImage', 'buyLink'].includes(k)).slice(0, 10).map(([k, v]) => `
-                        <div class="spec-item"><strong>${k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> ${v}</div>
-                    `).join('')}
+        <div class="space-y-12">
+            ${items.map((item, index) => `
+            <div class="item-card card-hover">
+                <div class="item-rank flex items-center justify-center">${index + 1}</div>
+                <div>
+                    <img src="${item.data.heroImage}" class="item-img" referrerpolicy="no-referrer">
                 </div>
-                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-                    <a href="${item.id}.html" style="background: #222; color: white; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Full Review</a>
-                    <a href="${item.data.buyLink}" style="background: var(--primary); color: black; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 800;">Buy Now</a>
+                <div>
+                    <h2 class="item-title">${item.name}</h2>
+                    <div class="item-specs">
+                        ${Object.entries(item.data).filter(([k]) => !['heroImage', 'buyLink'].includes(k)).slice(0, 10).map(([k, v]) => `
+                            <div class="spec-item"><strong>${k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</strong> ${v}</div>
+                        `).join('')}
+                    </div>
+                    <div class="mt-10 flex flex-wrap gap-4">
+                        <a href="${item.id}.html" class="px-8 py-4 bg-gray-100 text-black font-black uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-all no-underline">Full Technical Review</a>
+                        <a href="${item.data.buyLink}" class="px-8 py-4 bg-blue-600 text-white font-black uppercase tracking-widest text-xs hover:bg-black transition-all no-underline">Check Price & Buy</a>
+                    </div>
                 </div>
             </div>
+            `).join('')}
         </div>
-        `).join('')}
     </div>
-    <footer>&copy; 2024 Aaditechiest. All rights reserved.</footer>
+    ${commonFooter}
 </body>
 </html>`;
 
@@ -984,35 +1008,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title} | Aaditechiest</title>
+    ${commonStyles}
     <style>
-        ${commonStyles}
-        .seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .seg-card { background: var(--card); border-radius: 20px; border: 1px solid #222; overflow: hidden; transition: transform 0.3s; }
-        .seg-card:hover { transform: translateY(-10px); border-color: var(--primary); }
-        .seg-img { width: 100%; height: 200px; object-fit: contain; background: #000; padding: 1rem; }
-        .seg-info { padding: 1.5rem; }
-        .seg-card h3 { color: var(--text); margin: 0 0 0.5rem 0; font-size: 1.2rem; }
-        .seg-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; }
+        .seg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; }
+        .seg-card { background: white; border: 2px solid black; overflow: hidden; }
+        .seg-img { width: 100%; height: 250px; object-fit: contain; background: #f9f9f9; padding: 2rem; border-bottom: 1px solid #eee; }
+        .seg-info { padding: 2rem; }
+        .seg-card h3 { font-family: 'Anton', sans-serif; text-transform: uppercase; margin: 0 0 0.5rem 0; font-size: 1.5rem; }
+        .seg-price { color: #2563eb; font-weight: 900; font-size: 1.25rem; margin-bottom: 1.5rem; }
     </style>
 </head>
-<body>
+<body class="antialiased">
     ${commonNav}
-    <div class="container">
-        <h1 style="font-size: 3.5rem; text-align: center; margin-bottom: 4rem;">${title}</h1>
+    <div class="max-w-[1200px] mx-auto px-4 py-24">
+        <h1 class="display-title text-7xl text-center mb-20">${title}</h1>
         <div class="seg-grid">
             ${items.map(item => `
-            <div class="seg-card">
+            <div class="seg-card card-hover">
                 <img src="${item.data.heroImage}" class="seg-img" referrerpolicy="no-referrer">
                 <div class="seg-info">
                     <h3>${item.name}</h3>
                     <div class="seg-price">${item.data.price || 'Price N/A'}</div>
-                    <a href="${item.id}.html" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View Full Review →</a>
+                    <a href="${item.id}.html" class="inline-block px-6 py-3 bg-black text-white font-black uppercase tracking-widest text-[10px] hover:bg-blue-600 transition-all no-underline">View Full Review</a>
                 </div>
             </div>
             `).join('')}
         </div>
     </div>
-    <footer>&copy; 2024 Aaditechiest. All rights reserved.</footer>
+    ${commonFooter}
 </body>
 </html>`;
 
@@ -1032,33 +1055,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${obj.brand} ${obj.model} Review | Aaditechiest</title>
     <meta name="description" content="Detailed technical review and specifications for ${obj.brand} ${obj.model}.">
+    ${commonStyles}
     <style>
-        ${commonStyles}
-        .hero { height: 60vh; background: url('${obj.heroImage}') center/cover no-referrer; display: flex; align-items: flex-end; padding: 4rem 5%; background-attachment: fixed; position: relative; }
-        .hero-overlay { background: linear-gradient(transparent, var(--bg)); position: absolute; top: 0; left: 0; width: 100%; height: 60vh; z-index: 1; }
-        .hero-content { position: relative; z-index: 2; }
-        .spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
-        .spec-card { background: var(--card); padding: 1.5rem; border-radius: 15px; border: 1px solid #222; }
-        .spec-card h3 { color: var(--primary); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
-        .spec-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
-        .spec-label { color: var(--text-dim); }
-        .buy-now { position: fixed; bottom: 2rem; right: 2rem; background: var(--primary); color: #000; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 800; box-shadow: 0 10px 20px rgba(0,242,255,0.3); z-index: 100; }
-        @media (max-width: 768px) { .spec-grid { grid-template-columns: 1fr; } }
+        .hero { height: 70vh; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 4rem 5%; }
+        .hero-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; color: white; }
+        .spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-top: 4rem; }
+        .spec-card { background: white; padding: 2.5rem; border: 2px solid black; }
+        .spec-card h3 { font-family: 'Anton', sans-serif; text-transform: uppercase; font-size: 1.5rem; margin-top: 0; border-bottom: 4px solid black; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .spec-item { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .spec-label { font-weight: 900; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; color: #666; }
+        .buy-now-btn { position: fixed; bottom: 2rem; right: 2rem; background: #2563eb; color: white; padding: 1.25rem 2.5rem; border-radius: 0; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; z-index: 100; border: 2px solid black; box-shadow: 8px 8px 0px black; transition: all 0.2s; }
+        .buy-now-btn:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0px black; }
+        @media (max-width: 768px) { .spec-grid { grid-template-columns: 1fr; } .hero { height: 50vh; } }
     </style>
 </head>
-<body>
+<body class="antialiased">
     ${commonNav}
-    <div class="hero" style="position: relative; height: 60vh; overflow: hidden; display: flex; align-items: flex-end; padding: 4rem 5%;">
-        <img src="${obj.heroImage}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" referrerpolicy="no-referrer">
-        <div class="hero-overlay" style="background: linear-gradient(transparent, var(--bg)); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
-        <div class="hero-content" style="position: relative; z-index: 2;">
-            <h1 style="font-size: 3rem; margin: 0;">${obj.brand} ${obj.model}</h1>
-            <p style="color: var(--primary); font-weight: 700;">Full Technical Review</p>
+    <div class="hero">
+        <img src="${obj.heroImage}" class="hero-img" referrerpolicy="no-referrer">
+        <div class="hero-overlay"></div>
+        <div class="hero-content max-w-[1600px] mx-auto w-full">
+            <span class="text-blue-500 font-black uppercase tracking-[0.3em] text-xs mb-4 block">Full Technical Review</span>
+            <h1 class="display-title text-7xl md:text-9xl mb-0">${obj.brand} ${obj.model}</h1>
         </div>
     </div>
 
-    <div class="container">
-        <a href="${obj.buyLink}" class="buy-now">Buy Now @ ${obj.price}</a>
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <a href="${obj.buyLink}" class="buy-now-btn no-underline">Check Price @ ${obj.price}</a>
         
         <div class="spec-grid">`;
 
@@ -1135,6 +1160,7 @@
       }
     }
     <\/script>
+    ${commonFooter}
 </body>
 </html>`;
 

@@ -117,87 +117,115 @@ async function startServer() {
   // API Route to list all items with metadata
   app.get("/api/list-items", (req, res) => {
     try {
-      const files = fs.readdirSync(dataDir);
-      const items = files.filter(file => file.endsWith('.json')).map(file => {
-        const content = JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf-8'));
-        return {
-          id: file.replace('.json', ''),
-          name: content.model ? `${content.brand} ${content.model}` : content.name,
-          data: content
-        };
-      });
+      const items = getItemsMetadata();
       res.json(items);
     } catch (error) {
       res.status(500).json({ error: "Failed to list items" });
     }
   });
 
-  // API Route to push to GitHub
-  app.post("/api/push-to-github", async (req, res) => {
-    const { filename, content, commitMessage } = req.body;
+  function getItemsMetadata() {
+    const files = fs.readdirSync(dataDir);
+    const items = files.filter(file => file.endsWith('.json') && file !== 'data.json').map(file => {
+      const content = JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf-8'));
+      return {
+        id: file.replace('.json', ''),
+        name: content.model ? `${content.brand} ${content.model}` : content.name,
+        data: content
+      };
+    });
+    
+    // Sort by updatedAt descending
+    items.sort((a, b) => {
+      const dateA = new Date(a.data.updatedAt || 0);
+      const dateB = new Date(b.data.updatedAt || 0);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    return items;
+  }
+
+  async function pushFileToGitHub(filename, content, commitMessage) {
     const token = process.env.GITHUB_TOKEN;
     const owner = process.env.GITHUB_USERNAME;
     const repo = process.env.GITHUB_REPO;
     const branch = process.env.GITHUB_BRANCH || 'main';
 
     if (!token || !owner || !repo) {
-      return res.status(400).json({ 
-        success: false, 
-        error: "GitHub configuration missing. Please add GITHUB_TOKEN, GITHUB_USERNAME, and GITHUB_REPO to AI Studio Settings." 
-      });
+      throw new Error("GitHub configuration missing.");
     }
 
-    const safeFilename = path.basename(filename).replace(/[^a-z0-9.-]/gi, '_');
-    const finalFilename = safeFilename.endsWith('.html') ? safeFilename : `${safeFilename}.html`;
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${finalFilename}`;
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filename}`;
+
+    // Check if file exists to get its SHA
+    let sha;
+    const getResponse = await fetch(url, {
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'AI-Studio-App'
+      }
+    });
+    
+    if (getResponse.ok) {
+      const fileData = await getResponse.json();
+      sha = fileData.sha;
+    }
+
+    // Push to GitHub
+    const pushResponse = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'AI-Studio-App'
+      },
+      body: JSON.stringify({
+        message: commitMessage,
+        content: Buffer.from(content).toString('base64'),
+        sha: sha,
+        branch: branch
+      })
+    });
+
+    if (!pushResponse.ok) {
+      const errorData = await pushResponse.json();
+      throw new Error(errorData.message || "GitHub API error");
+    }
+
+    return await pushResponse.json();
+  }
+
+  // API Route to push to GitHub
+  app.post("/api/push-to-github", async (req, res) => {
+    const { filename, content, commitMessage } = req.body;
+    
+    if (!filename || !content) {
+      return res.status(400).json({ error: "Filename and content are required." });
+    }
 
     try {
-      // Check if file exists to get its SHA (required for updates)
-      let sha;
-      console.log(`Checking if file exists: ${url}`);
-      const getResponse = await fetch(url, {
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'AI-Studio-App'
-        }
-      });
+      // 1. Push the HTML page
+      const safeFilename = path.basename(filename).replace(/[^a-z0-9.-]/gi, '_');
+      const finalFilename = safeFilename.endsWith('.html') ? safeFilename : `${safeFilename}.html`;
       
-      if (getResponse.ok) {
-        const fileData = await getResponse.json();
-        sha = fileData.sha;
-        console.log(`File exists, SHA: ${sha}`);
-      } else if (getResponse.status !== 404) {
-        const errData = await getResponse.json();
-        console.error("GitHub GET Error:", errData);
-        return res.status(getResponse.status).json({ success: false, error: errData.message || "GitHub API error" });
+      const pushResult = await pushFileToGitHub(finalFilename, content, commitMessage || `Add ${finalFilename} review page`);
+
+      // 2. Update and push data.json
+      const items = getItemsMetadata();
+      const dataJsonContent = JSON.stringify(items, null, 2);
+      fs.writeFileSync(path.join(process.cwd(), 'data.json'), dataJsonContent);
+      
+      try {
+        await pushFileToGitHub('data.json', dataJsonContent, "Update data.json metadata");
+      } catch (dataErr) {
+        console.error("Failed to push data.json:", dataErr);
+        // We don't fail the whole request if data.json fails, but it's not ideal
       }
 
-      // Push to GitHub
-      console.log(`Pushing to GitHub: ${url}`);
-      const pushResponse = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'AI-Studio-App'
-        },
-        body: JSON.stringify({
-          message: commitMessage || `Add ${finalFilename} review page`,
-          content: Buffer.from(content).toString('base64'),
-          sha: sha,
-          branch: branch
-        })
-      });
-
-      if (!pushResponse.ok) {
-        const errorData = await pushResponse.json();
-        console.error("GitHub PUT Error:", errorData);
-        throw new Error(errorData.message || "GitHub API error");
-      }
-
-      const result = await pushResponse.json();
+      const owner = process.env.GITHUB_USERNAME;
+      const repo = process.env.GITHUB_REPO;
       const customDomain = process.env.CUSTOM_DOMAIN;
       let baseUrl = `https://${owner}.github.io/${repo}`;
       
@@ -210,7 +238,7 @@ async function startServer() {
       res.json({ 
         success: true, 
         url: `${baseUrl}/${finalFilename}`,
-        githubUrl: result.content.html_url
+        githubUrl: pushResult.content.html_url
       });
     } catch (error) {
       console.error("GitHub Push Error:", error);

@@ -178,8 +178,19 @@
     <script>
         async function loadHomeContent() {
             try {
-                const response = await fetch('/api/list-items');
-                const items = await response.json();
+                let items = [];
+                try {
+                    const response = await fetch('/api/list-items');
+                    if (response.ok) {
+                        items = await response.json();
+                    } else {
+                        throw new Error('API failed');
+                    }
+                } catch (e) {
+                    console.log('Falling back to static data.json');
+                    const response = await fetch('/data.json');
+                    items = await response.json();
+                }
 
                 // Load Comparisons
                 const comparisons = items.filter(i => i.data.pageType === 'comparison').slice(0, 3);

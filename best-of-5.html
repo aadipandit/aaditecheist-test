@@ -86,8 +86,19 @@
     <script>
         async function loadBestOfs() {
             try {
-                const response = await fetch('/api/list-items');
-                const items = await response.json();
+                let items = [];
+                try {
+                    const response = await fetch('/api/list-items');
+                    if (response.ok) {
+                        items = await response.json();
+                    } else {
+                        throw new Error('API failed');
+                    }
+                } catch (e) {
+                    console.log('Falling back to static data.json');
+                    const response = await fetch('/data.json');
+                    items = await response.json();
+                }
                 
                 const bestOfs = items.filter(item => item.data.pageType === 'bestof5');
                 const listContainer = document.getElementById('b5List');

@@ -86,8 +86,19 @@
     <script>
         async function loadBudget() {
             try {
-                const response = await fetch('/api/list-items');
-                const items = await response.json();
+                let items = [];
+                try {
+                    const response = await fetch('/api/list-items');
+                    if (response.ok) {
+                        items = await response.json();
+                    } else {
+                        throw new Error('API failed');
+                    }
+                } catch (e) {
+                    console.log('Falling back to static data.json');
+                    const response = await fetch('/data.json');
+                    items = await response.json();
+                }
                 
                 const budgetItems = items.filter(item => item.data.folder === 'budget');
                 const listContainer = document.getElementById('budgetList');
