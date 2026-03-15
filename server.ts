@@ -198,9 +198,18 @@ async function startServer() {
       }
 
       const result = await pushResponse.json();
+      const customDomain = process.env.CUSTOM_DOMAIN;
+      let baseUrl = `https://${owner}.github.io/${repo}`;
+      
+      if (customDomain) {
+        baseUrl = `https://${customDomain}`;
+      } else if (repo === `${owner}.github.io`) {
+        baseUrl = `https://${owner}.github.io`;
+      }
+      
       res.json({ 
         success: true, 
-        url: `https://${owner}.github.io/${repo}/${finalFilename}`,
+        url: `${baseUrl}/${finalFilename}`,
         githubUrl: result.content.html_url
       });
     } catch (error) {
