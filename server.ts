@@ -28,9 +28,10 @@ async function startServer() {
   // Ensure subdirectories exist for generated content
   const subDirs = ['comparison', 'best-of', 'budget', 'segment', 'mobile', 'laptop'];
   subDirs.forEach(dir => {
-    const dirPath = path.join(process.cwd(), dir);
+    const dirPath = path.resolve(process.cwd(), dir);
     if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath);
+      console.log(`Creating directory: ${dirPath}`);
+      fs.mkdirSync(dirPath, { recursive: true });
     }
   });
 
@@ -47,7 +48,12 @@ async function startServer() {
 
   // Health check
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", time: new Date().toISOString() });
+    res.json({ 
+      status: "ok", 
+      time: new Date().toISOString(),
+      cwd: process.cwd(),
+      folders: fs.readdirSync(process.cwd()).filter(f => fs.statSync(f).isDirectory())
+    });
   });
 
   // CORS Middleware (Allow requests from GitHub Pages for testing)
@@ -75,7 +81,10 @@ async function startServer() {
     // Determine target directory
     let targetDir = process.cwd();
     if (folder && ['comparison', 'best-of', 'budget', 'segment', 'mobile', 'laptop'].includes(folder)) {
-      targetDir = path.join(process.cwd(), folder);
+      targetDir = path.resolve(process.cwd(), folder);
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
     }
     
     const filePath = path.join(targetDir, finalFilename);
@@ -258,14 +267,14 @@ async function startServer() {
     if (!filename) return res.status(400).json({ error: "Filename required" });
 
     let filePath = path.join(process.cwd(), filename);
-    if (folder) {
+    if (folder && ['comparison', 'best-of', 'budget', 'segment', 'mobile', 'laptop'].includes(folder)) {
       filePath = path.join(process.cwd(), folder, filename);
     }
     
-    if (!fs.existsSync(filePath)) return res.status(404).json({ error: "File not found" });
-
     try {
-      fs.unlinkSync(filePath);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
       // Also delete metadata if it exists
       const metadataPath = path.join(dataDir, `${filename.replace('.html', '')}.json`);
       if (fs.existsSync(metadataPath)) {
@@ -273,7 +282,8 @@ async function startServer() {
       }
       res.json({ success: true });
     } catch (error) {
-      res.status(500).json({ error: "Failed to delete file" });
+      console.error("Delete Error:", error);
+      res.status(500).json({ error: "Failed to delete page" });
     }
   });
 
