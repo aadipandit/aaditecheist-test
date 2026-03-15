@@ -37,7 +37,7 @@
                     <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
                         <i class="fas fa-bolt text-white text-lg"></i>
                     </div>
-                    <span class="text-2xl font-black tracking-tighter">TECH<span class="text-blue-600">REVIEW</span></span>
+                    <span class="text-2xl font-black tracking-tighter uppercase">aaditechiest</span>
                 </div>
                 <div class="hidden lg:flex items-center space-x-10">
                     <a href="/" class="text-sm font-bold uppercase tracking-widest text-blue-600">Home</a>
@@ -100,13 +100,37 @@
             </div>
         </section>
 
+        <!-- Latest Reviews Section -->
+        <section class="mb-32">
+            <div class="flex items-center justify-between mb-12 border-b-2 border-black pb-4">
+                <h2 class="display-title text-4xl">LATEST REVIEWS</h2>
+                <div class="flex gap-4">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Mobile & Laptops</span>
+                </div>
+            </div>
+            <div id="latestReviews" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
         <!-- Segments Section -->
-        <section>
+        <section class="mb-32">
             <div class="flex items-center justify-between mb-12 border-b-2 border-black pb-4">
                 <h2 class="display-title text-4xl">MARKET SEGMENTS</h2>
                 <a href="/segments.html" class="text-xs font-black uppercase tracking-widest hover:text-blue-600">Explore All Segments <i class="fas fa-arrow-right ml-2"></i></a>
             </div>
             <div id="featuredSegments" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
+
+        <!-- Budget Section -->
+        <section class="mb-32">
+            <div class="flex items-center justify-between mb-12 border-b-2 border-black pb-4">
+                <h2 class="display-title text-4xl">BUDGET TECH</h2>
+                <a href="/budget.html" class="text-xs font-black uppercase tracking-widest hover:text-blue-600">View Budget Guides <i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+            <div id="budgetGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Dynamic Content -->
             </div>
         </section>
@@ -120,7 +144,7 @@
                         <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
                             <i class="fas fa-bolt text-black text-lg"></i>
                         </div>
-                        <span class="text-2xl font-black tracking-tighter">TECH<span class="text-blue-400">REVIEW</span></span>
+                        <span class="text-2xl font-black tracking-tighter">aaditechiest</span>
                     </div>
                     <p class="text-gray-400 max-w-md mb-8">The world's most trusted source for technology reviews and buying advice. We help millions of people find the best tech for their needs.</p>
                     <div class="flex gap-4">
@@ -214,6 +238,45 @@
                     `).join('');
                 } else {
                     segContainer.innerHTML = '<p class="text-gray-400 col-span-full">No segments generated yet.</p>';
+                }
+
+                // Load Latest Reviews (Mobile/Laptop)
+                const latest = items.filter(i => ['mobile', 'laptop'].includes(i.data.pageType))
+                    .sort((a, b) => new Date(b.data.updatedAt) - new Date(a.data.updatedAt))
+                    .slice(0, 8);
+                const latestContainer = document.getElementById('latestReviews');
+                if (latest.length > 0) {
+                    latestContainer.innerHTML = latest.map(item => `
+                        <a href="${item.data.url || '/' + item.id + '.html'}" class="card-hover group">
+                            <div class="aspect-[3/4] bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5 relative overflow-hidden">
+                                <img src="${item.data.heroImage || 'https://picsum.photos/seed/' + item.id + '/400/600'}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" referrerpolicy="no-referrer">
+                                <div class="absolute top-4 left-4 bg-black text-white text-[8px] font-black uppercase tracking-widest px-2 py-1">
+                                    ${item.data.pageType}
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-black uppercase mb-1 group-hover:text-blue-600">${item.data.brand} ${item.data.model}</h3>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">${item.data.targetUse || 'Premium Tech'}</p>
+                        </a>
+                    `).join('');
+                } else {
+                    latestContainer.innerHTML = '<p class="text-gray-400 col-span-full">No product reviews generated yet.</p>';
+                }
+
+                // Load Budget Tech
+                const budget = items.filter(i => i.data.folder === 'budget').slice(0, 3);
+                const budgetContainer = document.getElementById('budgetGrid');
+                if (budget.length > 0) {
+                    budgetContainer.innerHTML = budget.map(item => `
+                        <a href="${item.data.url || '/' + item.id + '.html'}" class="card-hover group">
+                            <div class="aspect-video bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5 overflow-hidden">
+                                <img src="${item.data.heroImage || 'https://picsum.photos/seed/' + item.id + '/400/225'}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" referrerpolicy="no-referrer">
+                            </div>
+                            <h3 class="text-xl font-black uppercase mb-1 group-hover:text-blue-600">${item.data.title || (item.data.brand + ' ' + item.data.model)}</h3>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Value Guide</p>
+                        </a>
+                    `).join('');
+                } else {
+                    budgetContainer.innerHTML = '<p class="text-gray-400 col-span-full">No budget guides generated yet.</p>';
                 }
 
             } catch (error) {

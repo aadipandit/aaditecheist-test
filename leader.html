@@ -6,12 +6,12 @@
     <title>Leader Panel | aaditechiest</title>
     <style>
         :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg: #0a0a0a;
-            --card: #1a1a1a;
-            --text: #ffffff;
-            --border: #333;
+            --primary: #2563eb;
+            --secondary: #000000;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
         }
 
         body {
@@ -31,10 +31,11 @@
         header {
             text-align: center;
             margin-bottom: 3rem;
-            padding: 2rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 3rem;
+            background: var(--secondary);
+            color: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         h1 { margin: 0; font-size: 2.5rem; }
@@ -50,19 +51,22 @@
         .tab-btn {
             background: var(--card);
             border: 1px solid var(--border);
-            color: white;
-            padding: 0.75rem 1.2rem;
-            border-radius: 10px;
+            color: var(--text);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: all 0.3s;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .tab-btn.active {
             background: var(--primary);
-            color: black;
+            color: white;
             border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
         .form-section {
@@ -94,9 +98,9 @@
         }
 
         .form-group input, .form-group select, .form-group textarea {
-            background: #222;
+            background: #fff;
             border: 1px solid var(--border);
-            color: white;
+            color: var(--text);
             padding: 0.75rem;
             border-radius: 8px;
             outline: none;
@@ -110,7 +114,7 @@
             max-height: 300px;
             overflow-y: auto;
             padding: 1rem;
-            background: #111;
+            background: #f1f5f9;
             border-radius: 10px;
             border: 1px solid var(--border);
         }
@@ -129,12 +133,12 @@
 
         .selectable-item:hover {
             border-color: var(--primary);
-            background: #2a2a2a;
+            background: #f8fafc;
         }
 
         .selectable-item.selected {
             border-color: var(--primary);
-            background: rgba(0, 242, 255, 0.1);
+            background: rgba(37, 99, 235, 0.05);
         }
 
         .selectable-item.selected::after {
@@ -153,9 +157,9 @@
         }
 
         .filter-btn {
-            background: #333;
+            background: #e2e8f0;
             border: none;
-            color: white;
+            color: var(--text);
             padding: 0.4rem 1rem;
             border-radius: 5px;
             cursor: pointer;
@@ -164,7 +168,7 @@
 
         .filter-btn.active {
             background: var(--primary);
-            color: black;
+            color: white;
         }
 
         .selection-summary {
@@ -188,28 +192,35 @@
             grid-column: 1 / -1;
             margin-top: 3rem;
             padding: 1.5rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: var(--primary);
             border: none;
             color: white;
             font-size: 1.2rem;
             font-weight: 800;
             border-radius: 15px;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
-        .generate-btn:hover { transform: scale(1.02); }
+        .generate-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        }
 
         #outputArea {
             width: 100%;
             height: 400px;
             margin-top: 2rem;
-            background: #000;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 1rem;
-            border-radius: 10px;
+            background: #1e293b;
+            color: #f8fafc;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1.5rem;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
         .copy-btn {

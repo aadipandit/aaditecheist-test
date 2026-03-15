@@ -5,127 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Tech Guides - aaditechiest</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Anton&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import "tailwindcss";
         :root {
-            --bg: #fdfdfd;
-            --ink: #1a1a1a;
-            --accent: #f59e0b;
+            --bg: #ffffff;
+            --ink: #000000;
+            --accent: #2563eb;
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--ink); }
-        .editorial-title { font-family: 'Playfair Display', serif; }
-        .card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .display-title { font-family: 'Anton', sans-serif; text-transform: uppercase; line-height: 0.9; letter-spacing: -0.02em; }
+        .editorial-font { font-family: 'Playfair Display', serif; }
+        .card-hover { transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .card-hover:hover { transform: scale(1.02); }
     </style>
 </head>
-<body>
-    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
+<body class="antialiased">
+    <nav class="bg-white/80 backdrop-blur-md border-b border-black/5 sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                        <i class="fas fa-bolt text-white text-sm"></i>
+                    <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-lg"></i>
                     </div>
-                    <span class="text-xl font-bold tracking-tighter">TECH<span class="text-blue-600">REVIEW</span></span>
+                    <span class="text-2xl font-black tracking-tighter uppercase">aaditechiest</span>
                 </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-sm font-medium hover:text-blue-600 transition-colors">Home</a>
-                    <a href="/comparisons.html" class="text-sm font-medium hover:text-blue-600 transition-colors">Comparisons</a>
-                    <a href="/best-of-5.html" class="text-sm font-medium hover:text-blue-600 transition-colors">Best of 5</a>
-                    <a href="/segments.html" class="text-sm font-medium hover:text-blue-600 transition-colors">Segments</a>
-                    <a href="/budget.html" class="text-sm font-medium text-blue-600">Budget</a>
+                <div class="hidden lg:flex items-center space-x-10">
+                    <a href="/" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Home</a>
+                    <a href="/comparisons.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Comparisons</a>
+                    <a href="/best-of-5.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Best of 5</a>
+                    <a href="/segments.html" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600 transition-colors">Segments</a>
+                    <a href="/budget.html" class="text-sm font-bold uppercase tracking-widest text-blue-600">Budget</a>
                 </div>
-                <div class="flex items-center gap-4">
-                    <a href="/leader.html" class="text-xs font-bold uppercase tracking-widest px-4 py-2 border border-black hover:bg-black hover:text-white transition-all">Leader Panel</a>
+                <div class="flex items-center gap-6">
+                    <a href="/leader.html" class="text-xs font-black uppercase tracking-[0.2em] px-6 py-3 bg-black text-white hover:bg-blue-600 transition-all rounded-full">Leader Panel</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <header class="py-16 bg-amber-50 border-b border-amber-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="editorial-title text-5xl md:text-6xl font-bold mb-4 italic text-amber-900">Budget Tech Hub</h1>
-            <p class="text-amber-700 max-w-2xl mx-auto text-lg">High performance doesn't have to mean high prices. Explore our curated guides for the best value tech on the market.</p>
+    <header class="py-24 border-b border-black">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="display-title text-7xl md:text-9xl mb-8">BUDGET TECH</h1>
+            <p class="editorial-font text-2xl md:text-4xl italic text-gray-600 max-w-3xl">Maximum performance, minimum price. We find the best value in the tech world.</p>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div id="budgetList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Budget items will be loaded here -->
+    <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div id="budgetList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <!-- Dynamic Content -->
             <div class="col-span-full py-20 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
-                <p class="text-gray-400">Finding value...</p>
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+                <p class="text-xs font-black uppercase tracking-widest">Loading budget guides...</p>
             </div>
         </div>
     </main>
 
-    <footer class="bg-white border-t border-gray-100 py-12 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-gray-400 text-sm">© 2026 aaditechiest. All rights reserved.</p>
+    <footer class="bg-black text-white py-24">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-24 items-end">
+                <div>
+                    <h2 class="display-title text-6xl mb-8">aaditechiest</h2>
+                    <p class="text-gray-400 max-w-md font-medium">The definitive source for tech reviews, comparisons, and buying advice. We test, you choose.</p>
+                </div>
+                <div class="text-right">
+                    <div class="flex justify-end gap-8 mb-12">
+                        <a href="#" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600">Twitter</a>
+                        <a href="#" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600">YouTube</a>
+                        <a href="#" class="text-sm font-bold uppercase tracking-widest hover:text-blue-600">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-24 pt-12 border-t border-white/10 text-center text-xs font-bold uppercase tracking-widest text-gray-500">
+                © 2026 aaditechiest. Built for the future of tech journalism.
+            </div>
         </div>
     </footer>
 
     <script>
-        async function loadBudgetContent() {
+        async function loadBudget() {
             try {
                 const response = await fetch('/api/list-items');
                 const items = await response.json();
                 
-                // Filter for segments or best-of-5 that contain "budget" or "value" in title or name
-                const budgetItems = items.filter(item => {
-                    const title = (item.data.title || '').toLowerCase();
-                    const name = (item.data.name || '').toLowerCase();
-                    return (item.data.pageType === 'segments' || item.data.pageType === 'bestof5') && 
-                           (title.includes('budget') || title.includes('value') || name.includes('budget'));
-                });
-
+                const budgetItems = items.filter(item => item.data.folder === 'budget');
                 const listContainer = document.getElementById('budgetList');
                 
                 if (budgetItems.length === 0) {
                     listContainer.innerHTML = `
-                        <div class="col-span-full py-20 text-center">
-                            <i class="fas fa-piggy-bank text-4xl text-gray-200 mb-4"></i>
-                            <p class="text-gray-400">No budget-focused guides found yet.</p>
-                            <p class="text-xs text-gray-300 mt-2">Tip: Create a segment or Best of 5 with "Budget" in the title.</p>
+                        <div class="col-span-full py-20 text-center border-2 border-dashed border-gray-200">
+                            <p class="text-xs font-black uppercase tracking-widest text-gray-400">No budget guides generated yet.</p>
                         </div>
                     `;
                     return;
                 }
 
-                listContainer.innerHTML = budgetItems.map(item => {
-                    const firstItem = item.data.items[0] || { name: 'Product', heroImage: '' };
-                    const colorClass = item.data.pageType === 'bestof5' ? 'emerald' : 'violet';
-                    const pageUrl = item.data.url || `/${item.id}.html`;
-                    
-                    return `
-                        <a href="${pageUrl}" class="card bg-white rounded-2xl overflow-hidden border border-gray-100 group">
-                            <div class="relative h-48 bg-gray-50 flex items-center justify-center p-6">
-                                <img src="${firstItem.heroImage || 'https://picsum.photos/seed/budget/400/300'}" 
-                                     class="h-full w-auto object-contain" 
-                                     referrerpolicy="no-referrer">
-                                <div class="absolute top-4 right-4 bg-amber-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Value Pick</div>
-                            </div>
-                            <div class="p-6">
-                                <h2 class="text-xl font-bold mb-2 group-hover:text-amber-600 transition-colors">${item.data.title}</h2>
-                                <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">${item.data.name || (item.data.pageType === 'bestof5' ? 'Best of 5' : 'Segment')}</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-500 text-xs">${item.data.items.length} Products</span>
-                                    <span class="text-amber-600 text-sm font-bold">View Guide <i class="fas fa-arrow-right ml-1"></i></span>
-                                </div>
-                            </div>
-                        </a>
-                    `;
-                }).join('');
-
+                listContainer.innerHTML = budgetItems.map(item => `
+                    <a href="${item.data.url || '/' + item.id + '.html'}" class="card-hover group">
+                        <div class="aspect-video bg-gray-100 mb-6 flex items-center justify-center p-8 border border-black/5 overflow-hidden">
+                            <img src="${item.data.heroImage || 'https://picsum.photos/seed/' + item.id + '/400/225'}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" referrerpolicy="no-referrer">
+                        </div>
+                        <h3 class="text-2xl font-black uppercase mb-2 group-hover:text-blue-600">${item.data.title || (item.data.brand + ' ' + item.data.model)}</h3>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Value Guide</span>
+                    </a>
+                `).join('');
             } catch (error) {
-                console.error('Error loading budget content:', error);
-                document.getElementById('budgetList').innerHTML = '<p class="text-red-500 text-center col-span-full">Failed to load content.</p>';
+                console.error('Error loading budget guides:', error);
             }
         }
-
-        window.onload = loadBudgetContent;
+        window.onload = loadBudget;
     </script>
 </body>
 </html>
